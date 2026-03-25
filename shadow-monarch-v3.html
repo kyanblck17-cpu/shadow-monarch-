@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SHADOW MONARCH SYSTEM v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=Barlow+Condensed:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#252523;
+  --w:#e8e8e6;--wg:rgba(232,232,230,0.45);--wb:rgba(255,255,255,0.12);
+  --gold:#c9a84c;--gg:rgba(201,168,76,0.5);--gf:rgba(51,48,39,0.55);--gb:rgba(201,168,76,0.28);
+  --spi:#c9a84c;--int:#4488ff;--pow:#ff2244;--ath:#00b4d8;--vit:#00ff88;--cha:#00ffdd;
+  --ng:#00ff88;--ngg:rgba(0,255,136,0.5);
+  --hq:#9b59b6;--hqg:rgba(155,89,182,0.5);--hqf:rgba(155,89,182,0.07);--hqb:rgba(155,89,182,0.28);
+  --txt:rgba(220,220,218,0.78);--td:rgba(180,180,176,0.42);--brd:rgba(255,255,255,0.09);
+  --f1:'Oxanium',sans-serif;--f2:'Barlow Condensed',sans-serif;--f3:'Share Tech Mono',monospace;
+  /* New rank colors */
+  --nc-iron:#9ea7ad;--nc-steel:#5c8fbd;--nc-mithril:#c084fc;--nc-adamant:#22d3ee;--nc-divine:#fbbf24;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:var(--f2);touch-action:pan-y;transition:background 2s ease;}
+/* Smooth palette transition on all elements that use CSS vars */
+.hero,.stat-card,.hbc,.q,.hq-item,.nav,.sec,.rl,.lvl-fill,.rp-fill,.sc-bar,.sg-bar-inner,.top3-bar,.dc,.xpc,.verd-box,.pen-box,.wk-item,.hq-folder,.shadow-card,.sv-banner,.jc-banner,.nr-fill,.circle-card{transition:background 2s ease,border-color 2s ease,color 2s ease,box-shadow 2s ease,text-shadow 2s ease;}
+.bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(201,168,76,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.02) 1px,transparent 1px);background-size:40px 40px;animation:gbr 9s ease-in-out infinite;transition:background-image 2s ease;}
+@keyframes gbr{0%,100%{opacity:.5}50%{opacity:1}}
+.bg-glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% -5%,rgba(201,168,76,.04) 0%,transparent 55%);transition:background 2s ease;}
+.scanline{position:fixed;left:0;right:0;height:1px;z-index:40;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(201,168,76,.06),transparent);animation:scn 12s linear infinite;transition:background 2s ease;}
+@keyframes scn{0%{top:-1px;opacity:0}2%{opacity:1}98%{opacity:1}100%{top:100%;opacity:0}}
+/* ── SWIPE ── */
+.sw{position:relative;z-index:10;width:100%;height:100vh;display:flex;will-change:transform;transition:transform .38s cubic-bezier(.4,0,.2,1);}
+.scr{width:100vw;height:100vh;flex-shrink:0;overflow-y:auto;overflow-x:hidden;padding:18px 15px 72px;-webkit-overflow-scrolling:touch;}
+/* ── NAV ── */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(28,28,26,.97);border-top:1px solid var(--brd);display:flex;justify-content:center;align-items:center;gap:28px;padding:10px 0 14px;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;opacity:.35;transition:all .25s;}
+.nav-item.on{opacity:1;}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--w);transition:all .3s;}
+.nav-item.on .nav-dot{width:18px;border-radius:2px;box-shadow:0 0 6px var(--wg);}
+.nav-lbl{font-family:var(--f3);font-size:7px;letter-spacing:3px;color:var(--td);}
+.nav-item.on .nav-lbl{color:var(--w);}
+/* ── SHARED ── */
+.hdr{text-align:center;margin-bottom:18px;}
+.ey{font-family:var(--f3);font-size:8px;letter-spacing:5px;color:var(--td);display:block;margin-bottom:5px;}
+.ttl{font-family:var(--f1);font-size:22px;font-weight:800;letter-spacing:5px;color:var(--w);text-shadow:0 0 20px var(--wg);}
+.ttl .ac{color:var(--gold);text-shadow:0 0 14px var(--gg);}
+.hl{margin-top:8px;height:1px;background:linear-gradient(90deg,transparent,var(--w),var(--gold),var(--w),transparent);opacity:.35;}
+.sec{font-family:var(--f3);font-size:8px;letter-spacing:4px;color:var(--td);margin-bottom:7px;margin-top:14px;display:flex;align-items:center;gap:7px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--brd),transparent);}
+.sec.gld{color:var(--gold);opacity:.75;}.sec.gld::after{background:linear-gradient(90deg,var(--gb),transparent);}
+.sec.red{color:var(--pow);}.sec.red::after{background:linear-gradient(90deg,rgba(255,34,68,.25),transparent);}
+.sec.pur{color:#9b59b6;}.sec.pur::after{background:linear-gradient(90deg,rgba(155,89,182,.25),transparent);}
+/* ── STATUS SCREEN ── */
+.hero{border:1px solid var(--brd);background:rgba(38,38,36,.9);margin-bottom:10px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--w),transparent);opacity:.22;}
+.hero-top{display:flex;align-items:stretch;border-bottom:1px solid var(--brd);}
+.rank-col{width:106px;flex-shrink:0;border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 8px;background:rgba(60,60,58,.5);cursor:pointer;}
+.rl{font-family:var(--f1);font-size:52px;font-weight:800;color:var(--w);line-height:1;text-shadow:0 0 28px var(--wg);animation:rp 4s ease-in-out infinite;transition:all .3s;}
+@keyframes rp{0%,100%{text-shadow:0 0 28px var(--wg)}50%{text-shadow:0 0 55px var(--wg),0 0 110px rgba(232,232,230,.2)}}
+.rank-lbl{font-family:var(--f3);font-size:7px;letter-spacing:3px;color:var(--td);margin-top:3px;}
+.rank-name{font-family:var(--f2);font-size:9px;font-weight:600;color:var(--gold);text-shadow:0 0 6px var(--gg);margin-top:4px;text-align:center;line-height:1.3;}
+.lvl-col{flex:1;padding:13px 14px;display:flex;flex-direction:column;justify-content:center;gap:7px;}
+.lvl-row{display:flex;align-items:baseline;gap:8px;}
+.lvl-lbl{font-family:var(--f3);font-size:8px;letter-spacing:4px;color:var(--td);}
+.lvl-num{font-family:var(--f1);font-size:48px;font-weight:800;color:var(--w);line-height:1;}
+.xp-row{display:flex;align-items:baseline;gap:6px;}
+.xp-num{font-family:var(--f1);font-size:20px;font-weight:700;color:var(--gold);text-shadow:0 0 8px var(--gg);}
+.xp-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);}
+.bar-labels{display:flex;justify-content:space-between;margin-bottom:3px;}
+.bar-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);}
+.bar-unk{font-family:var(--f3);font-size:7px;color:rgba(255,255,255,.18);}
+.lvl-track{height:4px;background:rgba(255,255,255,.07);border:1px solid var(--brd);overflow:hidden;}
+.lvl-fill{height:100%;background:linear-gradient(90deg,rgba(232,232,230,.3),var(--w));box-shadow:0 0 10px var(--wg);width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1);position:relative;}
+.lvl-fill::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:#fff;box-shadow:0 0 6px #fff;opacity:.8;animation:sh 2s ease-in-out infinite;}
+@keyframes sh{0%,100%{opacity:.3}50%{opacity:.9}}
+.hero-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.hbc{padding:9px 11px;border-right:1px solid var(--brd);cursor:pointer;transition:background .2s;}
+.hbc:last-child{border-right:none;}
+.hbc:active{background:rgba(255,255,255,.04);}
+.hbc-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);display:block;margin-bottom:2px;}
+.hbc-val{font-family:var(--f1);font-size:20px;font-weight:700;color:var(--w);line-height:1;}
+.hbc-val.gld{color:var(--gold);text-shadow:0 0 7px var(--gg);}
+.hbc-sub{font-family:var(--f2);font-size:10px;font-weight:500;color:var(--td);margin-top:1px;}
+.rank-prog{margin-bottom:10px;}
+.rp-top{display:flex;justify-content:space-between;margin-bottom:3px;}
+.rp-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--gold);opacity:.6;}
+.rp-val{font-family:var(--f3);font-size:7px;color:var(--td);}
+.rp-track{height:4px;background:rgba(201,168,76,.07);border:1px solid var(--gb);overflow:hidden;}
+.rp-fill{height:100%;background:linear-gradient(90deg,rgba(201,168,76,.3),var(--gold));box-shadow:0 0 6px var(--gg);width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+/* NEW RANK PROGRESS (for bonus ranks) */
+.nr-prog{margin-bottom:6px;}
+.nr-top{display:flex;justify-content:space-between;margin-bottom:3px;}
+.nr-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;opacity:.6;}
+.nr-track{height:3px;overflow:hidden;}
+.nr-fill{height:100%;width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.stat-card{border:1px solid var(--brd);background:rgba(38,38,36,.7);padding:10px 11px;cursor:pointer;transition:all .18s;position:relative;}
+.stat-card:active{opacity:.7;}
+.stat-card::after{content:'▸';position:absolute;top:7px;right:8px;font-size:8px;color:var(--td);opacity:.4;}
+.sc-top{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.sc-abbr{font-family:var(--f1);font-size:14px;font-weight:800;width:42px;flex-shrink:0;}
+.sc-name{font-family:var(--f2);font-size:11px;font-weight:600;color:var(--td);flex:1;}
+.sc-num{font-family:var(--f1);font-size:13px;font-weight:700;}
+.sc-track{height:3px;background:rgba(255,255,255,.06);overflow:hidden;margin-bottom:3px;}
+.sc-bar{height:100%;width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+.sc-week{font-family:var(--f3);font-size:7px;color:var(--td);}
+.spi .sc-abbr,.spi .sc-num{color:var(--spi);text-shadow:0 0 6px rgba(201,168,76,.5);}
+.spi .sc-bar{background:linear-gradient(90deg,rgba(201,168,76,.3),var(--spi));box-shadow:0 0 5px rgba(201,168,76,.4);}
+.int .sc-abbr,.int .sc-num{color:var(--int);text-shadow:0 0 6px rgba(68,136,255,.5);}
+.int .sc-bar{background:linear-gradient(90deg,rgba(68,136,255,.3),var(--int));box-shadow:0 0 5px rgba(68,136,255,.4);}
+.pow .sc-abbr,.pow .sc-num{color:var(--pow);text-shadow:0 0 6px rgba(255,34,68,.5);}
+.pow .sc-bar{background:linear-gradient(90deg,rgba(255,34,68,.3),var(--pow));box-shadow:0 0 5px rgba(255,34,68,.4);}
+.ath .sc-abbr,.ath .sc-num{color:var(--ath);text-shadow:0 0 6px rgba(0,180,216,.5);}
+.ath .sc-bar{background:linear-gradient(90deg,rgba(0,180,216,.3),var(--ath));box-shadow:0 0 5px rgba(0,180,216,.4);}
+.vit .sc-abbr,.vit .sc-num{color:var(--vit);text-shadow:0 0 6px rgba(0,255,136,.5);}
+.vit .sc-bar{background:linear-gradient(90deg,rgba(0,255,136,.3),var(--vit));box-shadow:0 0 5px rgba(0,255,136,.4);}
+.cha .sc-abbr,.cha .sc-num{color:var(--cha);text-shadow:0 0 6px rgba(0,255,221,.5);}
+.cha .sc-bar{background:linear-gradient(90deg,rgba(0,255,221,.3),var(--cha));box-shadow:0 0 5px rgba(0,255,221,.4);}
+.edit-btn{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:6px 12px;cursor:pointer;width:100%;margin-top:10px;transition:all .2s;}
+.edit-btn:hover{color:var(--w);border-color:var(--wb);}
+/* ── SYSTEM VOICE BANNER ── */
+.sv-banner{border:1px solid rgba(201,168,76,.22);background:rgba(51,48,39,.6);padding:9px 13px;margin-bottom:10px;position:relative;overflow:hidden;}
+.sv-banner::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--gold);box-shadow:0 0 6px var(--gg);}
+.sv-ey{font-family:var(--f3);font-size:7px;letter-spacing:4px;color:var(--gold);opacity:.5;display:block;margin-bottom:3px;}
+.sv-txt{font-family:var(--f1);font-size:12px;font-weight:600;color:var(--gold);text-shadow:0 0 8px var(--gg);line-height:1.45;opacity:.9;}
+/* ── JOB CHANGE BANNER ── */
+.jc-banner{border:1px solid rgba(155,89,182,.45);background:rgba(155,89,182,.08);padding:11px 14px;margin-bottom:10px;position:relative;overflow:hidden;cursor:pointer;animation:jcpulse 2.5s ease-in-out infinite;}
+@keyframes jcpulse{0%,100%{box-shadow:0 0 0 0 rgba(155,89,182,0)}50%{box-shadow:0 0 12px 2px rgba(155,89,182,.18)}}
+.jc-banner::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--hq);box-shadow:0 0 8px var(--hqg);}
+.jc-ey{font-family:var(--f3);font-size:7px;letter-spacing:5px;color:var(--hq);opacity:.65;display:block;margin-bottom:3px;}
+.jc-title{font-family:var(--f1);font-size:14px;font-weight:800;color:#cc88ff;letter-spacing:2px;}
+.jc-sub{font-family:var(--f2);font-size:12px;font-weight:500;color:rgba(200,160,240,.55);margin-top:2px;}
+/* ── STAT DETAIL PANEL ── */
+.stat-panel{position:fixed;inset:0;z-index:200;background:rgba(20,20,18,.97);display:none;flex-direction:column;padding:22px 16px;overflow-y:auto;}
+.stat-panel.on{display:flex;animation:pnlin .3s both;}
+@keyframes pnlin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.sp-back{font-family:var(--f3);font-size:8px;letter-spacing:3px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:6px 14px;cursor:pointer;align-self:flex-start;margin-bottom:18px;}
+.sp-hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd);}
+.sp-abbr{font-family:var(--f1);font-size:52px;font-weight:800;line-height:1;}
+.sp-name{font-family:var(--f1);font-size:18px;font-weight:700;color:var(--w);letter-spacing:2px;}
+.sp-stats-lbl{font-family:var(--f3);font-size:10px;color:var(--td);margin-top:4px;}
+.sp-desc{font-family:var(--f2);font-size:14px;font-weight:500;color:var(--txt);line-height:1.65;margin-bottom:16px;}
+.sp-sec{font-family:var(--f3);font-size:8px;letter-spacing:4px;color:var(--td);margin-bottom:8px;margin-top:14px;display:flex;align-items:center;gap:7px;}
+.sp-sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--brd),transparent);}
+.sp-q{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:9px 12px;margin-bottom:5px;}
+.sp-q-name{font-family:var(--f2);font-size:14px;font-weight:600;color:var(--txt);}
+.sp-q-xp{font-family:var(--f3);font-size:8px;color:var(--gold);margin-top:2px;}
+/* ── STREAK PANEL ── */
+.streak-panel{position:fixed;inset:0;z-index:200;background:rgba(20,20,18,.97);display:none;flex-direction:column;padding:22px 16px;overflow-y:auto;}
+.streak-panel.on{display:flex;animation:pnlin .3s both;}
+.sg-title{font-family:var(--f1);font-size:16px;font-weight:800;color:var(--w);letter-spacing:3px;margin-bottom:3px;}
+.sg-sub{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);margin-bottom:16px;}
+/* Week navigation */
+.sg-week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sg-week-btn{font-family:var(--f3);font-size:9px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:5px 10px;cursor:pointer;transition:all .2s;}
+.sg-week-btn:hover{color:var(--w);border-color:var(--wb);}
+.sg-week-lbl{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--gold);}
+.sg-graph{display:flex;align-items:flex-end;gap:6px;height:150px;margin-bottom:12px;}
+.sg-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;position:relative;}
+.sg-xp-lbl{font-family:var(--f3);font-size:7px;color:var(--td);}
+.sg-bar-outer{flex:1;width:100%;display:flex;align-items:flex-end;background:rgba(255,255,255,.05);border:1px solid var(--brd);border-radius:2px;overflow:hidden;position:relative;}
+.sg-bar-inner{width:100%;transition:height 1s cubic-bezier(.4,0,.2,1);border-radius:2px 2px 0 0;}
+.sg-grade-badge{position:absolute;top:3px;left:50%;transform:translateX(-50%);font-family:var(--f1);font-size:9px;font-weight:800;}
+.sg-day-lbl{font-family:var(--f3);font-size:7px;letter-spacing:1px;}
+/* Day XP editor */
+.sg-day-editor{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:12px 14px;margin-bottom:12px;display:none;}
+.sg-day-editor.on{display:block;}
+.sg-de-title{font-family:var(--f3);font-size:8px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;}
+.sg-de-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
+.sg-de-row{display:flex;flex-direction:column;gap:2px;}
+.sg-de-lbl{font-family:var(--f3);font-size:7px;letter-spacing:1px;color:var(--td);}
+.sg-de-inp{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--w);font-family:var(--f3);font-size:11px;padding:4px 7px;outline:none;width:100%;}
+.sg-de-btns{display:flex;gap:6px;}
+.sg-de-save{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--gold);background:var(--gf);border:1px solid var(--gb);padding:5px 12px;cursor:pointer;}
+.sg-de-cancel{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:5px 12px;cursor:pointer;}
+.sg-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.sg-stat{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:9px 11px;}
+.sg-stat-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);display:block;margin-bottom:3px;}
+.sg-stat-val{font-family:var(--f1);font-size:20px;font-weight:700;color:var(--w);line-height:1;}
+.sg-stat-val.gld{color:var(--gold);text-shadow:0 0 7px var(--gg);}
+.sg-verdict{border:1px solid var(--gb);background:var(--gf);padding:11px 14px;}
+.sg-verdict-lbl{font-family:var(--f3);font-size:7px;letter-spacing:3px;color:var(--gold);opacity:.55;display:block;margin-bottom:4px;}
+.sg-verdict-txt{font-family:var(--f1);font-size:13px;font-weight:600;color:var(--gold);text-shadow:0 0 7px var(--gg);line-height:1.5;}
+/* ── HQ FOLDER ROW ── */
+.hq-folder{display:flex;align-items:center;gap:12px;border:1px solid var(--hqb);background:var(--hqf);padding:13px 14px;cursor:pointer;transition:all .2s;position:relative;margin-top:2px;}
+.hq-folder::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--hq);box-shadow:0 0 8px var(--hqg);}
+.hq-folder:active{background:rgba(155,89,182,.14);}
+.hqf-icon{font-family:var(--f3);font-size:18px;color:var(--hq);text-shadow:0 0 12px var(--hqg);flex-shrink:0;}
+.hqf-body{flex:1;}
+.hqf-title{font-family:var(--f1);font-size:15px;font-weight:800;color:#cc88ff;letter-spacing:2px;}
+.hqf-sub{font-family:var(--f3);font-size:8px;color:rgba(155,89,182,.5);letter-spacing:1px;margin-top:3px;}
+.hqf-count{font-family:var(--f1);font-size:15px;font-weight:700;color:var(--hq);flex-shrink:0;}
+.hqf-arr{font-size:12px;color:rgba(155,89,182,.4);flex-shrink:0;}
+/* ── HQ PANEL ── */
+.hq-panel{position:fixed;inset:0;z-index:250;background:rgba(10,6,18,.98);display:none;flex-direction:column;padding:22px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.hq-panel.on{display:flex;animation:pnlin .3s both;}
+.hqp-back{font-family:var(--f3);font-size:8px;letter-spacing:3px;color:rgba(155,89,182,.6);background:transparent;border:1px solid var(--hqb);padding:6px 14px;cursor:pointer;align-self:flex-start;margin-bottom:18px;}
+.hqp-ey{font-family:var(--f3);font-size:8px;letter-spacing:5px;color:rgba(155,89,182,.4);display:block;margin-bottom:5px;}
+.hqp-title{font-family:var(--f1);font-size:22px;font-weight:800;color:#cc88ff;letter-spacing:4px;text-shadow:0 0 22px var(--hqg);}
+.hqp-line{margin-top:8px;margin-bottom:14px;height:1px;background:linear-gradient(90deg,var(--hq),rgba(155,89,182,.1),transparent);}
+.hqp-intro{font-family:var(--f2);font-size:13px;font-weight:500;color:rgba(200,180,230,.4);line-height:1.6;margin-bottom:20px;font-style:italic;}
+.hq-item{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--hqb);background:rgba(155,89,182,.05);padding:12px 12px;margin-bottom:6px;cursor:pointer;position:relative;transition:all .2s;}
+.hq-item::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--hq);box-shadow:0 0 6px var(--hqg);}
+.hq-item.done{background:rgba(0,255,136,.04);border-color:rgba(0,255,136,.18);}
+.hq-item.done::before{background:var(--ng);box-shadow:0 0 6px var(--ngg);}
+.hq-box{width:18px;height:18px;border:1.5px solid var(--hqb);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--f3);font-size:10px;color:var(--hq);margin-top:1px;transition:all .2s;}
+.hq-item.done .hq-box{border-color:var(--ng);background:rgba(0,255,136,.1);color:var(--ng);}
+.hq-body{flex:1;}
+.hq-meta{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.hq-stat-tag{font-family:var(--f3);font-size:8px;padding:2px 6px;border:1px solid;letter-spacing:1px;}
+.hq-item.done .hq-stat-tag{opacity:.4;}
+.hq-xp-tag{font-family:var(--f3);font-size:9px;color:rgba(155,89,182,.6);}
+.hq-item.done .hq-xp-tag{color:rgba(201,168,76,.3);}
+.hq-name{font-family:var(--f2);font-size:14px;font-weight:700;color:rgba(220,200,240,.85);line-height:1.3;margin-bottom:5px;}
+.hq-item.done .hq-name{color:rgba(0,255,136,.42);text-decoration:line-through;text-decoration-color:rgba(0,255,136,.22);}
+.hq-flavor{font-family:var(--f2);font-size:12px;font-weight:500;color:rgba(180,158,210,.4);line-height:1.5;font-style:italic;}
+.hq-item.done .hq-flavor{color:rgba(0,255,136,.22);}
+/* ── SHADOW ARMY ── */
+.army-section{margin-bottom:14px;}
+.army-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.shadow-card{border:1px solid rgba(155,89,182,.25);background:rgba(155,89,182,.05);padding:9px 11px;position:relative;overflow:hidden;}
+.shadow-card::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--hq);}
+.shadow-card.empty{border-color:var(--brd);background:rgba(36,36,34,.4);}
+.shadow-card.empty::before{background:var(--brd);}
+.shadow-rank{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:rgba(155,89,182,.5);display:block;margin-bottom:2px;}
+.shadow-name{font-family:var(--f1);font-size:13px;font-weight:700;color:#cc88ff;line-height:1;}
+.shadow-card.empty .shadow-name{color:var(--td);font-size:11px;}
+.shadow-skill{font-family:var(--f2);font-size:11px;color:rgba(180,158,210,.5);margin-top:3px;}
+/* ── QUEST SCREEN ── */
+.xp-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.xpc{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:10px 12px;}
+.xpc.gld{border-color:var(--gb);background:var(--gf);}
+.xpc-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);display:block;margin-bottom:3px;}
+.xpc.gld .xpc-lbl{color:var(--gold);opacity:.65;}
+.xpc-val{font-family:var(--f1);font-size:24px;font-weight:800;color:var(--w);line-height:1;}
+.xpc.gld .xpc-val{color:var(--gold);text-shadow:0 0 8px var(--gg);}
+.xpc-sub{font-family:var(--f2);font-size:11px;font-weight:500;color:var(--td);margin-top:1px;}
+.sgh{display:flex;align-items:center;gap:8px;padding:5px 8px;margin-bottom:4px;margin-top:11px;border-left:2px solid;}
+.sgh-abbr{font-family:var(--f1);font-size:12px;font-weight:800;}
+.sgh-name{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);}
+.sgh-earned{font-family:var(--f3);font-size:8px;color:var(--td);margin-left:auto;}
+.sgh.spi{border-color:var(--spi);background:rgba(201,168,76,.05);}.sgh.spi .sgh-abbr{color:var(--spi);}
+.sgh.int{border-color:var(--int);background:rgba(68,136,255,.05);}.sgh.int .sgh-abbr{color:var(--int);}
+.sgh.pow{border-color:var(--pow);background:rgba(255,34,68,.05);}.sgh.pow .sgh-abbr{color:var(--pow);}
+.sgh.ath{border-color:var(--ath);background:rgba(0,180,216,.05);}.sgh.ath .sgh-abbr{color:var(--ath);}
+.sgh.vit{border-color:var(--vit);background:rgba(0,255,136,.04);}.sgh.vit .sgh-abbr{color:var(--vit);}
+.sgh.cha{border-color:var(--cha);background:rgba(0,255,221,.04);}.sgh.cha .sgh-abbr{color:var(--cha);}
+.q-list{display:flex;flex-direction:column;gap:3px;}
+.q{display:flex;align-items:center;gap:9px;border:1px solid var(--brd);background:rgba(36,36,34,.7);padding:9px 10px;position:relative;overflow:hidden;cursor:pointer;transition:background .2s;}
+.q::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:rgba(255,255,255,.18);}
+.q.done{background:rgba(0,255,136,.04);border-color:rgba(0,255,136,.18);}
+.q.done::before{background:var(--ng);box-shadow:0 0 6px var(--ngg);}
+.q-box{width:17px;height:17px;border:1.5px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--f1);font-size:10px;color:var(--w);transition:all .2s;}
+.q.done .q-box{border-color:var(--ng);background:rgba(0,255,136,.1);color:var(--ng);}
+.q-text{font-family:var(--f2);font-size:14px;font-weight:600;color:var(--txt);flex:1;line-height:1.3;}
+.q.done .q-text{color:rgba(0,255,136,.45);text-decoration:line-through;text-decoration-color:rgba(0,255,136,.22);}
+.q-xp{font-family:var(--f3);font-size:9px;color:var(--gold);flex-shrink:0;}
+.q.done .q-xp{color:rgba(201,168,76,.3);}
+@keyframes qfl{0%{box-shadow:0 0 0 0 rgba(0,255,136,.6)}100%{box-shadow:0 0 0 14px rgba(0,255,136,0)}}
+.q.flash{animation:qfl .5s ease-out;}
+.q-total{font-family:var(--f3);font-size:10px;color:var(--td);text-align:right;margin-top:5px;}
+/* Weekly Goals Editor */
+.wk-header{display:flex;justify-content:space-between;align-items:center;margin-top:16px;margin-bottom:6px;}
+.wk-edit-btn{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:rgba(201,168,76,.5);background:transparent;border:1px solid rgba(201,168,76,.2);padding:3px 8px;cursor:pointer;}
+.wk-list{display:flex;flex-direction:column;gap:3px;}
+.wk-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--gb);background:var(--gf);}
+.wk-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 5px var(--gg);flex-shrink:0;}
+.wk-text{font-family:var(--f2);font-size:13px;font-weight:600;color:var(--txt);flex:1;}
+.wk-badge{font-family:var(--f3);font-size:7px;padding:2px 5px;border:1px solid var(--gb);color:var(--gold);}
+.wk-del{background:transparent;border:none;color:rgba(201,168,76,.3);cursor:pointer;font-size:11px;padding:0 3px;}
+.wk-add-row{display:flex;gap:7px;margin-top:7px;}
+.wk-inp{flex:1;background:rgba(201,168,76,.04);border:1px solid var(--gb);color:var(--w);font-family:var(--f3);font-size:11px;padding:5px 9px;outline:none;}
+.wk-inp::placeholder{color:rgba(201,168,76,.18);}
+.wk-add{background:transparent;border:1px solid rgba(201,168,76,.25);color:var(--gold);font-family:var(--f3);font-size:9px;padding:5px 9px;cursor:pointer;}
+.pen-box{border:1px solid rgba(255,34,68,.18);background:rgba(255,34,68,.03);padding:9px 12px;position:relative;}
+.pen-box::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--pow);box-shadow:0 0 5px rgba(255,34,68,.4);}
+.pen-none{font-family:var(--f3);font-size:8px;color:rgba(255,34,68,.28);letter-spacing:2px;}
+.pen-item{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.pen-txt{font-family:var(--f2);font-size:13px;font-weight:600;color:var(--pow);flex:1;}
+.pen-del{background:transparent;border:none;color:rgba(255,34,68,.4);cursor:pointer;font-size:13px;padding:0 3px;}
+.pen-row{display:flex;gap:7px;margin-top:7px;}
+.pen-inp{flex:1;background:rgba(255,34,68,.04);border:1px solid rgba(255,34,68,.18);color:var(--w);font-family:var(--f3);font-size:11px;padding:5px 9px;outline:none;}
+.pen-inp::placeholder{color:rgba(255,34,68,.18);}
+.pen-add{background:transparent;border:1px solid rgba(255,34,68,.25);color:var(--pow);font-family:var(--f3);font-size:9px;padding:5px 9px;cursor:pointer;}
+.verd-box{border:1px solid var(--gb);background:var(--gf);padding:11px 14px;margin-bottom:7px;}
+.verd-lbl{font-family:var(--f3);font-size:7px;letter-spacing:3px;color:var(--gold);opacity:.55;display:block;margin-bottom:4px;}
+.verd-txt{font-family:var(--f1);font-size:13px;font-weight:600;color:var(--gold);text-shadow:0 0 7px var(--gg);line-height:1.5;}
+.verd-inp{width:100%;background:rgba(201,168,76,.04);border:1px solid var(--gb);color:var(--gold);font-family:var(--f1);font-size:12px;padding:7px 9px;outline:none;resize:none;margin-top:6px;line-height:1.5;}
+.verd-inp::placeholder{color:rgba(201,168,76,.18);}
+.reset-btn{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:6px 12px;cursor:pointer;width:100%;margin-top:8px;}
+/* ── LOG SCREEN ── */
+.circles-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.circle-card{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.c-svg-wrap{position:relative;width:88px;height:88px;}
+.c-svg-wrap svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.c-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.c-pct{font-family:var(--f1);font-size:18px;font-weight:800;line-height:1;}
+.c-pct-lbl{font-family:var(--f3);font-size:7px;letter-spacing:1px;color:var(--td);margin-top:1px;}
+.c-title{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);text-align:center;}
+.c-sub{font-family:var(--f2);font-size:11px;font-weight:500;color:var(--td);text-align:center;}
+.top3-grid{display:flex;flex-direction:column;gap:7px;margin-bottom:4px;}
+.top3-item{border:1px solid var(--brd);background:rgba(38,38,36,.6);padding:11px 14px;display:flex;align-items:center;gap:12px;}
+.top3-rank{font-family:var(--f1);font-size:22px;font-weight:800;color:var(--td);width:28px;flex-shrink:0;}
+.top3-abbr{font-family:var(--f1);font-size:20px;font-weight:800;width:48px;flex-shrink:0;}
+.top3-info{flex:1;}
+.top3-name{font-family:var(--f2);font-size:14px;font-weight:700;color:var(--txt);}
+.top3-xp{font-family:var(--f3);font-size:9px;color:var(--td);margin-top:2px;}
+.top3-track{height:4px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:4px;}
+.top3-bar{height:100%;width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+.goal-item{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--brd);background:rgba(38,38,36,.5);padding:11px 12px;margin-bottom:7px;}
+.goal-num{font-family:var(--f1);font-size:22px;font-weight:800;color:rgba(255,255,255,.14);flex-shrink:0;line-height:1;}
+.goal-title{font-family:var(--f2);font-size:14px;font-weight:700;color:var(--txt);}
+.goal-sub{font-family:var(--f2);font-size:12px;font-weight:500;color:var(--td);margin-top:3px;line-height:1.4;}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.dc{border:1px solid var(--brd);background:rgba(38,38,36,.5);padding:9px 11px;}
+.dc-lbl{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);display:block;margin-bottom:3px;}
+.dc-val{font-family:var(--f1);font-size:16px;font-weight:700;color:var(--w);}
+.dc-edit{background:transparent;border:none;color:rgba(201,168,76,.4);cursor:pointer;font-size:9px;margin-left:6px;font-family:var(--f3);}
+.ref-list{display:flex;flex-direction:column;gap:3px;}
+.ref-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border:1px solid rgba(255,34,68,.1);background:rgba(255,34,68,.03);}
+.ref-row.wh{border-color:var(--brd);background:rgba(38,38,36,.4);}
+.ref-b{font-family:var(--f2);font-size:13px;font-weight:600;color:var(--txt);}
+.ref-p{font-family:var(--f3);font-size:9px;color:var(--pow);}
+.ref-p.d{color:var(--td);}.ref-p.gld{color:var(--gold);}
+/* New Ranks section */
+.new-ranks-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+.nr-card{border:1px solid;padding:10px 12px;cursor:pointer;transition:all .18s;position:relative;}
+.nr-card:active{opacity:.7;}
+.nr-card-letter{font-family:var(--f1);font-size:28px;font-weight:800;line-height:1;}
+.nr-card-name{font-family:var(--f2);font-size:11px;font-weight:600;margin-top:2px;}
+.nr-card-req{font-family:var(--f3);font-size:7px;letter-spacing:1px;opacity:.6;margin-top:3px;}
+/* ── EDIT MODAL ── */
+.mo-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;}
+.mo-bg.on{display:flex;}
+.mo{background:#1e1e1c;border:1px solid var(--brd);padding:20px 16px;width:90%;max-width:400px;max-height:88vh;overflow-y:auto;}
+.mo h2{font-family:var(--f1);font-size:14px;font-weight:800;color:var(--w);letter-spacing:3px;margin-bottom:14px;text-align:center;}
+.mo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.fl{display:flex;flex-direction:column;gap:3px;}
+.fl label{font-family:var(--f3);font-size:7px;letter-spacing:2px;color:var(--td);}
+.fl input,.fl select{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--w);font-family:var(--f3);font-size:12px;padding:6px 8px;outline:none;width:100%;}
+.mo-btns{display:flex;gap:8px;justify-content:flex-end;}
+.btn{font-family:var(--f3);font-size:8px;letter-spacing:2px;padding:7px 14px;border:1px solid;cursor:pointer;}
+.btn-s{color:var(--gold);border-color:var(--gb);background:var(--gf);}
+.btn-c{color:var(--td);border-color:var(--brd);background:transparent;}
+/* Sprint setup modal */
+.sprint-mo{background:#1e1e1c;border:1px solid var(--brd);padding:20px 16px;width:90%;max-width:380px;}
+.sprint-mo h2{font-family:var(--f1);font-size:14px;font-weight:800;color:var(--w);letter-spacing:3px;margin-bottom:14px;text-align:center;}
+.sprint-mo .fl{margin-bottom:10px;}
+/* Standalone sprint modal (not using mo-bg) */
+#sprintmo{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;}
+#sprintmo.on{display:flex;}
+/* ── OVERLAYS ── */
+.ov{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.ov.on{display:flex;animation:ovin .4s both;}
+@keyframes ovin{from{opacity:0}to{opacity:1}}
+#luo{background:rgba(18,18,16,.97);}
+.lu-ey{font-family:var(--f3);font-size:8px;letter-spacing:6px;color:var(--td);}
+.lu-n{font-family:var(--f1);font-size:64px;font-weight:800;color:var(--w);text-shadow:0 0 30px var(--wg);animation:lup 1.2s ease-in-out infinite;}
+@keyframes lup{0%,100%{text-shadow:0 0 30px var(--wg)}50%{text-shadow:0 0 65px var(--wg),0 0 130px rgba(232,232,230,.2)}}
+.lu-s{font-family:var(--f3);font-size:9px;letter-spacing:4px;color:var(--td);}
+.lu-m{font-family:var(--f2);font-size:14px;font-weight:500;color:var(--td);text-align:center;max-width:220px;line-height:1.6;}
+.obtn{font-family:var(--f3);font-size:9px;letter-spacing:3px;background:transparent;border:1px solid var(--brd);padding:8px 20px;cursor:pointer;margin-top:5px;color:var(--td);transition:all .3s;}
+.obtn:hover{color:var(--w);border-color:var(--wb);}
+.obtn.gld{color:var(--gold);border-color:var(--gb);}
+.obtn.grn{color:var(--ng);border-color:rgba(0,255,136,.28);}
+.obtn.pur{color:#cc88ff;border-color:rgba(155,89,182,.4);}
+#ruo{background:rgba(18,18,16,.98);}
+.ru-ey{font-family:var(--f3);font-size:8px;letter-spacing:6px;color:var(--td);}
+.ru-l{font-family:var(--f1);font-size:88px;font-weight:800;color:var(--gold);line-height:1;text-shadow:0 0 40px var(--gg);animation:rup 1.5s ease-in-out infinite;}
+@keyframes rup{0%,100%{text-shadow:0 0 40px var(--gg)}50%{text-shadow:0 0 80px var(--gg),0 0 160px rgba(201,168,76,.35)}}
+.ru-t{font-family:var(--f1);font-size:16px;font-weight:700;color:var(--w);letter-spacing:4px;text-align:center;}
+.ru-s{font-family:var(--f2);font-size:13px;font-weight:500;color:var(--td);text-align:center;max-width:240px;line-height:1.6;}
+#smo{background:rgba(18,18,16,.96);}
+.sm-n{font-family:var(--f1);font-size:64px;font-weight:800;color:var(--ng);line-height:1;text-shadow:0 0 30px var(--ngg);}
+.sm-l{font-family:var(--f3);font-size:8px;letter-spacing:5px;color:var(--ng);opacity:.6;}
+.sm-m{font-family:var(--f2);font-size:13px;font-weight:500;color:var(--w);text-align:center;max-width:220px;line-height:1.5;}
+/* JOB CHANGE OVERLAY */
+#jco{background:radial-gradient(ellipse at 50% 20%,rgba(155,89,182,.18) 0%,rgba(6,4,12,.99) 55%);}
+.jc-ov-ey{font-family:var(--f3);font-size:8px;letter-spacing:6px;color:rgba(155,89,182,.6);}
+.jc-ov-title{font-family:var(--f1);font-size:20px;font-weight:800;color:#cc88ff;letter-spacing:4px;text-align:center;text-shadow:0 0 22px var(--hqg);}
+.jc-ov-icon{font-family:var(--f1);font-size:72px;font-weight:800;color:#cc88ff;line-height:1;text-shadow:0 0 40px var(--hqg),0 0 80px rgba(155,89,182,.4);animation:jcpulse2 1.5s ease-in-out infinite;}
+@keyframes jcpulse2{0%,100%{text-shadow:0 0 40px var(--hqg)}50%{text-shadow:0 0 80px var(--hqg),0 0 160px rgba(155,89,182,.6)}}
+.jc-ov-msg{font-family:var(--f2);font-size:14px;font-weight:500;color:rgba(210,180,255,.75);text-align:center;max-width:260px;line-height:1.65;}
+/* NEW RANK OVERLAY */
+#nro{background:rgba(6,4,12,.99);}
+.nr-ov-letter{font-family:var(--f1);font-size:88px;font-weight:800;line-height:1;animation:nrpulse 1.5s ease-in-out infinite;}
+@keyframes nrpulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.4)}}
+.nr-ov-name{font-family:var(--f1);font-size:16px;font-weight:700;letter-spacing:4px;text-align:center;}
+.nr-ov-msg{font-family:var(--f2);font-size:13px;font-weight:500;color:rgba(210,210,206,.75);text-align:center;max-width:240px;line-height:1.65;}
+/* HQ NOTIFICATION BANNER */
+.hq-notif{position:fixed;top:0;left:0;right:0;z-index:500;transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1);background:rgba(16,10,26,.97);border-bottom:1px solid var(--hqb);padding:14px 18px;display:flex;align-items:center;gap:12px;}
+.hq-notif.on{transform:translateY(0);}
+.hq-notif-icon{font-family:var(--f3);font-size:16px;color:var(--hq);text-shadow:0 0 10px var(--hqg);}
+.hq-notif-body{flex:1;}
+.hq-notif-ey{font-family:var(--f3);font-size:7px;letter-spacing:4px;color:rgba(155,89,182,.5);display:block;margin-bottom:2px;}
+.hq-notif-txt{font-family:var(--f1);font-size:13px;font-weight:700;color:#cc88ff;}
+.hq-notif-close{font-family:var(--f3);font-size:9px;color:rgba(155,89,182,.5);background:transparent;border:1px solid var(--hqb);padding:5px 10px;cursor:pointer;}
+/* ── GRADE OVERLAYS ── */
+.grade-ov{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:none;}
+.grade-ov.on{display:flex;pointer-events:all;}
+#gov-b{background:rgba(10,10,8,.97);background:radial-gradient(ellipse at 50% 30%,rgba(180,210,255,.08) 0%,rgba(10,10,8,.97) 50%);}
+#gov-a{background:rgba(10,10,8,.98);background:radial-gradient(ellipse at 50% 30%,rgba(201,168,76,.1) 0%,rgba(10,10,8,.98) 50%);}
+#gov-s{background:rgba(6,4,12,.99);background:radial-gradient(ellipse at 50% 30%,rgba(155,89,182,.12) 0%,rgba(6,4,12,.99) 50%);}
+.gov-ey{font-family:var(--f3);font-size:8px;letter-spacing:6px;color:rgba(180,180,176,.6);}
+.gov-grade{font-family:var(--f1);font-weight:800;line-height:1;text-align:center;}
+.gov-lbl{font-family:var(--f3);font-size:9px;letter-spacing:5px;text-align:center;}
+.gov-msg{font-family:var(--f2);font-size:15px;font-weight:600;text-align:center;max-width:260px;line-height:1.65;color:rgba(210,210,206,.85);}
+.gov-dismiss{font-family:var(--f3);font-size:9px;letter-spacing:3px;background:transparent;border:1px solid;padding:8px 20px;cursor:pointer;margin-top:8px;transition:all .3s;}
+#gov-b .gov-grade{font-size:96px;color:var(--w);text-shadow:0 0 40px var(--wg),0 0 80px rgba(200,220,255,.3);animation:govB 2s ease-in-out infinite;}
+@keyframes govB{0%,100%{text-shadow:0 0 40px var(--wg)}50%{text-shadow:0 0 80px var(--wg),0 0 160px rgba(220,235,255,.4)}}
+#gov-b .gov-lbl{color:rgba(210,228,255,.92);}
+#gov-b .gov-dismiss{color:rgba(210,228,255,.85);border-color:rgba(200,220,255,.4);}
+#gov-b.on{animation:govIn .5s both;}
+#gov-a .gov-grade{font-size:96px;color:var(--gold);text-shadow:0 0 40px var(--gg),0 0 80px rgba(201,168,76,.4);animation:govA 1.8s ease-in-out infinite;}
+@keyframes govA{0%,100%{text-shadow:0 0 40px var(--gg)}50%{text-shadow:0 0 90px var(--gg),0 0 180px rgba(201,168,76,.5)}}
+#gov-a .gov-lbl{color:rgba(220,185,90,.95);}
+#gov-a .gov-dismiss{color:var(--gold);border-color:rgba(201,168,76,.55);}
+#gov-a.on{animation:govIn .5s both;}
+#gov-s .gov-grade{font-size:96px;color:#cc88ff;text-shadow:0 0 40px var(--hqg),0 0 80px rgba(155,89,182,.5);animation:govS 1.5s ease-in-out infinite;}
+@keyframes govS{0%,100%{text-shadow:0 0 40px var(--hqg)}50%{text-shadow:0 0 100px var(--hqg),0 0 200px rgba(155,89,182,.6)}}
+#gov-s .gov-lbl{color:rgba(210,150,255,.95);}
+#gov-s .gov-dismiss{color:#cc88ff;border-color:rgba(155,89,182,.55);}
+#gov-s.on{animation:govIn .5s both;}
+@keyframes govIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+/* ── RANK INFO PANEL ── */
+.rank-panel{position:fixed;inset:0;z-index:200;background:rgba(20,20,18,.97);display:none;flex-direction:column;padding:22px 16px;overflow-y:auto;}
+.rank-panel.on{display:flex;animation:pnlin .3s both;}
+.rnk-back{font-family:var(--f3);font-size:8px;letter-spacing:3px;color:var(--td);background:transparent;border:1px solid var(--brd);padding:6px 14px;cursor:pointer;align-self:flex-start;margin-bottom:18px;}
+.rnk-hero{display:flex;align-items:center;gap:16px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--brd);}
+.rnk-letter{font-family:var(--f1);font-size:72px;font-weight:800;line-height:1;}
+.rnk-info{}
+.rnk-name{font-family:var(--f1);font-size:16px;font-weight:800;color:var(--w);letter-spacing:2px;margin-bottom:4px;}
+.rnk-req{font-family:var(--f3);font-size:8px;letter-spacing:2px;color:var(--td);}
+.rnk-desc{font-family:var(--f2);font-size:14px;font-weight:500;color:var(--txt);line-height:1.65;margin-bottom:16px;}
+.rnk-how-lbl{font-family:var(--f3);font-size:8px;letter-spacing:4px;color:var(--td);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.rnk-how-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--brd),transparent);}
+.rnk-how{font-family:var(--f2);font-size:14px;font-weight:500;color:var(--txt);line-height:1.65;}
+.rnk-next{border:1px solid var(--gb);background:var(--gf);padding:11px 14px;margin-top:16px;}
+.rnk-next-lbl{font-family:var(--f3);font-size:7px;letter-spacing:3px;color:var(--gold);opacity:.55;display:block;margin-bottom:4px;}
+.rnk-next-txt{font-family:var(--f2);font-size:13px;font-weight:600;color:var(--gold);line-height:1.5;}
+/* ── SKETCH CANVAS ── */
+.sketch-wrap{width:100%;aspect-ratio:1/1;max-height:220px;margin-bottom:14px;border:1px solid var(--brd);background:rgba(28,28,26,.8);overflow:hidden;position:relative;}
+.sketch-canvas{width:100%;height:100%;display:block;}
+/* ── JOB CHANGE PANEL ── */
+.jcpanel{position:fixed;inset:0;z-index:250;background:radial-gradient(ellipse at 50% 0%,rgba(155,89,182,.1) 0%,rgba(6,4,12,.99) 50%);display:none;flex-direction:column;padding:22px 16px;overflow-y:auto;}
+.jcpanel.on{display:flex;animation:pnlin .3s both;}
+.jcpanel-back{font-family:var(--f3);font-size:8px;letter-spacing:3px;color:rgba(155,89,182,.6);background:transparent;border:1px solid var(--hqb);padding:6px 14px;cursor:pointer;align-self:flex-start;margin-bottom:18px;}
+.jcp-title{font-family:var(--f1);font-size:20px;font-weight:800;color:#cc88ff;letter-spacing:4px;text-shadow:0 0 22px var(--hqg);margin-bottom:4px;}
+.jcp-sub{font-family:var(--f3);font-size:8px;letter-spacing:4px;color:rgba(155,89,182,.5);margin-bottom:16px;}
+.jcp-line{height:1px;background:linear-gradient(90deg,var(--hq),rgba(155,89,182,.1),transparent);margin-bottom:18px;}
+.jcp-flavor{font-family:var(--f2);font-size:13px;font-weight:500;color:rgba(200,180,230,.45);line-height:1.7;margin-bottom:20px;font-style:italic;}
+.jc-quest{border:1px solid var(--hqb);background:rgba(155,89,182,.05);padding:13px 14px;margin-bottom:8px;position:relative;}
+.jc-quest::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--hq);}
+.jc-q-name{font-family:var(--f2);font-size:15px;font-weight:700;color:rgba(220,200,240,.9);margin-bottom:5px;}
+.jc-q-desc{font-family:var(--f2);font-size:13px;font-weight:500;color:rgba(180,158,210,.5);line-height:1.5;}
+.jc-q-reward{font-family:var(--f3);font-size:9px;color:var(--gold);margin-top:6px;}
+.jc-complete-btn{font-family:var(--f3);font-size:9px;letter-spacing:2px;color:#cc88ff;background:rgba(155,89,182,.08);border:1px solid var(--hqb);padding:10px 16px;cursor:pointer;width:100%;margin-top:8px;transition:all .2s;}
+.jc-complete-btn:hover{background:rgba(155,89,182,.15);}
+.jc-complete-btn:disabled{opacity:.3;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div><div class="bg-glow"></div><div class="scanline"></div>
+
+<div class="hq-notif" id="hqnotif">
+  <span class="hq-notif-icon">◈</span>
+  <div class="hq-notif-body">
+    <span class="hq-notif-ey">SYSTEM ALERT</span>
+    <div class="hq-notif-txt">Hidden Quests Available — untapped potential detected.</div>
+  </div>
+  <button class="hq-notif-close" onclick="dismissHQNotif()">DISMISS</button>
+</div>
+
+<div class="sw" id="sw">
+
+<!-- ═══ S1: STATUS ═══ -->
+<div class="scr">
+  <div class="hdr"><span class="ey">◈ SHADOW MONARCH SYSTEM v3 ◈</span><div class="ttl">HUNTER <span class="ac">STATUS</span></div><div class="hl"></div></div>
+
+  <div class="sv-banner" id="svbanner">
+    <span class="sv-ey">SYSTEM</span>
+    <div class="sv-txt" id="svtxt">Loading system message...</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div class="rank-col" onclick="openRankPanel(currentRank())">
+        <div class="rl" id="rl">E</div>
+        <div class="rank-lbl">RANK</div>
+        <div class="rank-name" id="rn">Awakened Hunter</div>
+      </div>
+      <div class="lvl-col">
+        <div class="lvl-row"><span class="lvl-lbl">LVL</span><div class="lvl-num" id="ln">1</div></div>
+        <div class="xp-row"><div class="xp-num" id="txn">0</div><span class="xp-lbl">TOTAL XP</span></div>
+        <div><div class="bar-labels"><span class="bar-lbl">NEXT THRESHOLD</span><span class="bar-unk">◈ UNKNOWN</span></div><div class="lvl-track"><div class="lvl-fill" id="lf"></div></div></div>
+      </div>
+    </div>
+    <div class="hero-bottom">
+      <div class="hbc" onclick="openStreak()"><span class="hbc-lbl">STREAK</span><div class="hbc-val" id="sv">0</div><div class="hbc-sub">tap for graph</div></div>
+      <div class="hbc" onclick="openStreak()"><span class="hbc-lbl">BEST</span><div class="hbc-val" id="bv">0</div><div class="hbc-sub">days</div></div>
+      <div class="hbc"><span class="hbc-lbl">TODAY</span><div class="hbc-val gld" id="gv">—</div><div class="hbc-sub" id="gs">not graded</div></div>
+    </div>
+  </div>
+
+  <div class="rank-prog">
+    <div class="rp-top"><span class="rp-lbl">E-RANK PROGRESS</span><span class="rp-val" id="rpl">E → D</span></div>
+    <div class="rp-track"><div class="rp-fill" id="rf"></div></div>
+  </div>
+
+  <!-- New Rank Progress (shown when unlocked) -->
+  <div id="nr-prog-wrap"></div>
+
+  <!-- Job Change banner (shown at certain levels) -->
+  <div class="jc-banner" id="jcbanner" style="display:none" onclick="openJCPanel()">
+    <span class="jc-ey">◈ SYSTEM NOTIFICATION ◈</span>
+    <div class="jc-title">JOB CHANGE QUEST AVAILABLE</div>
+    <div class="jc-sub">The System has detected hidden potential. A trial awaits. ▸</div>
+  </div>
+
+  <div class="sec">STAT PANEL <span style="font-size:7px;opacity:.3;margin-left:4px;font-family:var(--f3);">TAP FOR DETAIL</span></div>
+  <div class="stats-grid">
+    <div class="stat-card spi" onclick="openStat('spi')"><div class="sc-top"><div class="sc-abbr">SPI</div><div class="sc-name">Spirit</div><div class="sc-num" id="p-spi">0</div></div><div class="sc-track"><div class="sc-bar" id="b-spi"></div></div><div class="sc-week" id="w-spi">0 XP this week</div></div>
+    <div class="stat-card int" onclick="openStat('int')"><div class="sc-top"><div class="sc-abbr">INT</div><div class="sc-name">Intelligence</div><div class="sc-num" id="p-int">0</div></div><div class="sc-track"><div class="sc-bar" id="b-int"></div></div><div class="sc-week" id="w-int">0 XP this week</div></div>
+    <div class="stat-card pow" onclick="openStat('pow')"><div class="sc-top"><div class="sc-abbr">POW</div><div class="sc-name">Power</div><div class="sc-num" id="p-pow">0</div></div><div class="sc-track"><div class="sc-bar" id="b-pow"></div></div><div class="sc-week" id="w-pow">0 XP this week</div></div>
+    <div class="stat-card ath" onclick="openStat('ath')"><div class="sc-top"><div class="sc-abbr">ATH</div><div class="sc-name">Athleticism</div><div class="sc-num" id="p-ath">0</div></div><div class="sc-track"><div class="sc-bar" id="b-ath"></div></div><div class="sc-week" id="w-ath">0 XP this week</div></div>
+    <div class="stat-card vit" onclick="openStat('vit')"><div class="sc-top"><div class="sc-abbr">VIT</div><div class="sc-name">Vitality</div><div class="sc-num" id="p-vit">0</div></div><div class="sc-track"><div class="sc-bar" id="b-vit"></div></div><div class="sc-week" id="w-vit">0 XP this week</div></div>
+    <div class="stat-card cha" onclick="openStat('cha')"><div class="sc-top"><div class="sc-abbr">CHA</div><div class="sc-name">Character</div><div class="sc-num" id="p-cha">0</div></div><div class="sc-track"><div class="sc-bar" id="b-cha"></div></div><div class="sc-week" id="w-cha">0 XP this week</div></div>
+  </div>
+  <button class="edit-btn" onclick="openModal()">◈ EDIT DATA</button>
+</div>
+
+<!-- ═══ S2: QUESTS ═══ -->
+<div class="scr">
+  <div class="hdr"><span class="ey">◈ SHADOW MONARCH SYSTEM v3 ◈</span><div class="ttl">DAILY <span class="ac">QUESTS</span></div><div class="hl"></div></div>
+  <div class="xp-cards">
+    <div class="xpc"><span class="xpc-lbl">XP EARNED TODAY</span><div class="xpc-val" id="xe">0</div><div class="xpc-sub" id="xp-remain">— XP remaining</div></div>
+    <div class="xpc gld"><span class="xpc-lbl">TODAY'S GRADE</span><div class="xpc-val" id="tgq">—</div><div class="xpc-sub" id="gsb">not yet graded</div></div>
+  </div>
+  <div class="sgh spi"><span class="sgh-abbr">SPI</span><span class="sgh-name">SPIRIT</span><span class="sgh-earned" id="sg-spi">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q1" data-xp="20" data-stat="spi"><div class="q-box">□</div><div class="q-text">Morning Prayer &amp; Bible (04:30 — 30 min)</div><div class="q-xp">+20</div></div>
+    <div class="q" data-id="q2" data-xp="20" data-stat="spi"><div class="q-box">□</div><div class="q-text">Night Prayer &amp; Scripture (19:55 — 30 min)</div><div class="q-xp">+20</div></div>
+  </div>
+  <div class="sgh int"><span class="sgh-abbr">INT</span><span class="sgh-name">INTELLIGENCE</span><span class="sgh-earned" id="sg-int">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q6" data-xp="15" data-stat="int"><div class="q-box">□</div><div class="q-text">Deep Work Block #1 — Study / CRT (90 min)</div><div class="q-xp">+15</div></div>
+    <div class="q" data-id="q7" data-xp="10" data-stat="int"><div class="q-box">□</div><div class="q-text">Deep Work Block #2 (90 min)</div><div class="q-xp">+10</div></div>
+    <div class="q" data-id="q8" data-xp="10" data-stat="int"><div class="q-box">□</div><div class="q-text">Deep Work Block #3 (90 min)</div><div class="q-xp">+10</div></div>
+    <div class="q" data-id="q9" data-xp="10" data-stat="int"><div class="q-box">□</div><div class="q-text">Deep Work Block #4 (90 min)</div><div class="q-xp">+10</div></div>
+  </div>
+  <div class="sgh pow"><span class="sgh-abbr">POW</span><span class="sgh-name">POWER</span><span class="sgh-earned" id="sg-pow">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q4" data-xp="5" data-stat="pow"><div class="q-box">□</div><div class="q-text" id="qt-warmup">Warm-Up protocol (10–12 min)</div><div class="q-xp">+5</div></div>
+    <div class="q" data-id="q5" data-xp="15" data-stat="pow"><div class="q-box">□</div><div class="q-text" id="qt-workout">Workout — full session (05:15 — 75 min)</div><div class="q-xp">+15</div></div>
+  </div>
+  <div class="sgh ath"><span class="sgh-abbr">ATH</span><span class="sgh-name">ATHLETICISM</span><span class="sgh-earned" id="sg-ath">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q15" data-xp="10" data-stat="ath"><div class="q-box">□</div><div class="q-text">Active Recovery / Sport Session (Sat — 60 min)</div><div class="q-xp">+10</div></div>
+    <div class="q" data-id="q16" data-xp="5" data-stat="ath"><div class="q-box">□</div><div class="q-text">Boxing Skill Work / Mobility (Wed — 25 min)</div><div class="q-xp">+5</div></div>
+  </div>
+  <div class="sgh vit"><span class="sgh-abbr">VIT</span><span class="sgh-name">VITALITY</span><span class="sgh-earned" id="sg-vit">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q3" data-xp="5" data-stat="vit"><div class="q-box">□</div><div class="q-text">Up at 04:30 — no snooze, bed made, dressed by 05:15</div><div class="q-xp">+5</div></div>
+    <div class="q" data-id="q11" data-xp="10" data-stat="vit"><div class="q-box">□</div><div class="q-text">Journaling block (19:00 — 45 min)</div><div class="q-xp">+10</div></div>
+    <div class="q" data-id="q17" data-xp="5" data-stat="vit"><div class="q-box">□</div><div class="q-text">Lunch walk (20–30 min)</div><div class="q-xp">+5</div></div>
+    <div class="q" data-id="q12" data-xp="5" data-stat="vit"><div class="q-box">□</div><div class="q-text">Lights out by 21:00</div><div class="q-xp">+5</div></div>
+    <div class="q" data-id="q13" data-xp="5" data-stat="vit"><div class="q-box">□</div><div class="q-text">House cleaned</div><div class="q-xp">+5</div></div>
+    <div class="q" data-id="q14" data-xp="5" data-stat="vit"><div class="q-box">□</div><div class="q-text">Next-day prep done (before 20:30)</div><div class="q-xp">+5</div></div>
+  </div>
+  <div class="sgh cha"><span class="sgh-abbr">CHA</span><span class="sgh-name">CHARACTER</span><span class="sgh-earned" id="sg-cha">0 XP</span></div>
+  <div class="q-list">
+    <div class="q" data-id="q10" data-xp="10" data-stat="cha"><div class="q-box">□</div><div class="q-text">Partner time — full attention</div><div class="q-xp">+10</div></div>
+  </div>
+  <div class="q-total" id="qtotal">0 quests done · 0 XP earned today</div>
+
+  <div class="hq-folder" onclick="openHQPanel()">
+    <span class="hqf-icon">◈</span>
+    <div class="hqf-body">
+      <div class="hqf-title">HIDDEN QUESTS</div>
+      <div class="hqf-sub" id="hqSub">9 trials available · tap to reveal</div>
+    </div>
+    <div class="hqf-count" id="hqCount">0/9</div>
+    <span class="hqf-arr">▸</span>
+  </div>
+
+  <!-- Weekly Goals -->
+  <div class="wk-header">
+    <div class="sec gld" style="margin-top:0;margin-bottom:0;flex:1;">WEEKLY GOALS</div>
+    <button class="wk-edit-btn" onclick="toggleWkEdit()">◈ EDIT</button>
+  </div>
+  <div id="wk-add-row" style="display:none" class="wk-add-row">
+    <input class="wk-inp" id="wkinp" placeholder="add a weekly goal..."/>
+    <button class="wk-add" onclick="addWkGoal()">ADD</button>
+  </div>
+  <div class="wk-list" id="wklist"></div>
+
+  <div class="sec red" style="margin-top:14px;">PENALTY LOG</div>
+  <div class="pen-box">
+    <div id="plist"><div class="pen-none">NO PENALTIES TODAY</div></div>
+    <div class="pen-row"><input class="pen-inp" id="pinp" placeholder="log a penalty..."/><button class="pen-add" onclick="addP()">ADD</button></div>
+  </div>
+
+  <div class="sec gld" style="margin-top:14px;">SYSTEM VERDICT</div>
+  <div class="verd-box"><span class="verd-lbl" id="vdate">—</span><div class="verd-txt" id="vtxt">The Gate opened. Day 1 was lost. Day 2 begins now. Arise.</div></div>
+  <textarea class="verd-inp" id="vinp" rows="2" placeholder="paste today's verdict from the System..."></textarea>
+  <button class="reset-btn" onclick="resetDay()">↺ RESET TODAY'S QUESTS</button>
+</div>
+
+<!-- ═══ S3: LOG ═══ -->
+<div class="scr">
+  <div class="hdr"><span class="ey">◈ SHADOW MONARCH SYSTEM v3 ◈</span><div class="ttl">SYSTEM <span class="ac">LOG</span></div><div class="hl"></div></div>
+  <div class="sec">PROGRESS</div>
+  <div class="circles-wrap">
+    <div class="circle-card">
+      <div class="c-svg-wrap">
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+          <circle cx="44" cy="44" r="36" fill="none" stroke="#00b4d8" stroke-width="6" stroke-linecap="round" stroke-dasharray="226.2" id="dayCircle" stroke-dashoffset="226.2" style="filter:drop-shadow(0 0 4px #00b4d880);transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div class="c-center"><div class="c-pct" id="dayPct" style="color:#00b4d8;">0%</div><div class="c-pct-lbl">DONE</div></div>
+      </div>
+      <div class="c-title">DAY PROGRESS</div>
+      <div class="c-sub" id="daySub">—</div>
+    </div>
+    <div class="circle-card">
+      <div class="c-svg-wrap">
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+          <circle cx="44" cy="44" r="36" fill="none" stroke="#c9a84c" stroke-width="6" stroke-linecap="round" stroke-dasharray="226.2" id="sprintCircle" stroke-dashoffset="226.2" style="filter:drop-shadow(0 0 4px #c9a84c80);transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div class="c-center"><div class="c-pct" id="sprintPct" style="color:#c9a84c;">0%</div><div class="c-pct-lbl">DONE</div></div>
+      </div>
+      <div class="c-title">100-DAY SPRINT</div>
+      <div class="c-sub" id="sprintSub">Day 0 of 100</div>
+    </div>
+  </div>
+  <div class="sec">HUNTER DATA</div>
+  <div class="data-grid">
+    <div class="dc"><span class="dc-lbl">START DATE</span><div class="dc-val" id="startDateDisp">18 MAR 2026 <button class="dc-edit" onclick="openSprintSetup()">✎</button></div></div>
+    <div class="dc"><span class="dc-lbl">DAY NUMBER</span><div class="dc-val" id="dn">—</div></div>
+    <div class="dc"><span class="dc-lbl">DAYS ACTIVE</span><div class="dc-val" id="da">—</div></div>
+    <div class="dc"><span class="dc-lbl">BEST STREAK</span><div class="dc-val" id="bs2">0</div></div>
+  </div>
+  <div class="sec" style="margin-top:4px;">TOP STATS THIS WEEK</div>
+  <div class="top3-grid" id="top3grid"></div>
+  <div class="sec pur" style="margin-top:4px;">SHADOW ARMY <span style="font-size:7px;opacity:.4;margin-left:4px;">EXTRACTED FROM HIDDEN QUESTS</span></div>
+  <div class="army-grid" id="armygrid"></div>
+  <div class="sec gld" style="margin-top:4px;">THE FOUR GOALS</div>
+  <div class="goal-item"><div class="goal-num">I</div><div><div class="goal-title">Deeper Relationship with God</div><div class="goal-sub">He is everything. Identity and worth flow from Him alone. Every prayer, every Scripture — an investment in what matters most.</div></div></div>
+  <div class="goal-item"><div class="goal-num">II</div><div><div class="goal-title">Profitable Trader</div><div class="goal-sub">$120/week · $480/month. Study first — trade WHEN consistent. Not yet, but soon.</div></div></div>
+  <div class="goal-item"><div class="goal-num">III</div><div><div class="goal-title">100-Day Character</div><div class="goal-sub">Think and move like the man 100 days from now. Open-minded but unshakeable. Vulnerable, gentle, strong enough to lead.</div></div></div>
+  <div class="goal-item"><div class="goal-num">IV</div><div><div class="goal-title">Body &amp; Fighting Ability</div><div class="goal-sub">52kg → 54kg. Athletic, capable, dangerous. Basketball, boxing, sprinting. A body built to perform.</div></div></div>
+  <div class="sec red" style="margin-top:4px;">PENALTY REFERENCE</div>
+  <div class="ref-list">
+    <div class="ref-row"><span class="ref-b">Snoozed alarm</span><span class="ref-p">−10 XP · VIT capped C</span></div>
+    <div class="ref-row"><span class="ref-b">Revenge trade</span><span class="ref-p">−15 XP · INT = F</span></div>
+    <div class="ref-row"><span class="ref-b">Skipped workout</span><span class="ref-p">−10 XP · POW = F</span></div>
+    <div class="ref-row"><span class="ref-b">Missed prayer</span><span class="ref-p">−10 XP · SPI capped D</span></div>
+    <div class="ref-row"><span class="ref-b">3 consecutive D/F days</span><span class="ref-p">RANK THREAT</span></div>
+  </div>
+  <div class="sec" style="margin-top:4px;">E–★ RANK REFERENCE</div>
+  <div class="ref-list">
+    <div class="ref-row wh" onclick="openRankPanel('E')" style="cursor:pointer;"><span class="ref-b">E — Awakened Hunter</span><span class="ref-p d">Starting rank ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('D')" style="cursor:pointer;"><span class="ref-b">D — Bronze Gate Hunter</span><span class="ref-p d">Pattern forming ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('C')" style="cursor:pointer;"><span class="ref-b">C — Silver Gate Hunter</span><span class="ref-p d">Discipline is real ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('B')" style="cursor:pointer;"><span class="ref-b">B — Gold Gate Hunter</span><span class="ref-p d">High performer ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('A')" style="cursor:pointer;"><span class="ref-b">A — Shadow Monarch's Guard</span><span class="ref-p d">Elite standard ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('S')" style="cursor:pointer;"><span class="ref-b">S — S-Rank Hunter</span><span class="ref-p d">Exceptional ▸</span></div>
+    <div class="ref-row wh" onclick="openRankPanel('★')" style="cursor:pointer;"><span class="ref-b">★ — National Level Hunter</span><span class="ref-p gld">Unstoppable ▸</span></div>
+  </div>
+  <div class="sec pur" style="margin-top:4px;">BEYOND E–★ · JOB CHANGE RANKS</div>
+  <div style="font-family:var(--f2);font-size:12px;color:rgba(200,180,230,.4);line-height:1.6;margin-bottom:10px;font-style:italic;padding:8px 12px;border:1px solid var(--hqb);background:rgba(155,89,182,.04);">"These ranks exist outside the normal system. They cannot be assigned — they must be claimed. Each requires a Job Change Quest completed at the threshold level. The System does not offer these twice."</div>
+  <div class="new-ranks-grid">
+    <div class="nr-card" style="border-color:rgba(158,167,173,.25);background:rgba(158,167,173,.05);" onclick="openRankPanel('IRON')"><div class="nr-card-letter" style="color:var(--nc-iron);text-shadow:0 0 12px rgba(158,167,173,.4);">Fe</div><div class="nr-card-name" style="color:var(--nc-iron);">Iron Commander</div><div class="nr-card-req">LVL 30 JOB CHANGE ▸</div></div>
+    <div class="nr-card" style="border-color:rgba(92,143,189,.25);background:rgba(92,143,189,.05);" onclick="openRankPanel('STEEL')"><div class="nr-card-letter" style="color:var(--nc-steel);text-shadow:0 0 12px rgba(92,143,189,.4);">St</div><div class="nr-card-name" style="color:var(--nc-steel);">Steel Commander</div><div class="nr-card-req">LVL 55 JOB CHANGE ▸</div></div>
+    <div class="nr-card" style="border-color:rgba(192,132,252,.25);background:rgba(192,132,252,.05);" onclick="openRankPanel('MITHRIL')"><div class="nr-card-letter" style="color:var(--nc-mithril);text-shadow:0 0 12px rgba(192,132,252,.4);">Mi</div><div class="nr-card-name" style="color:var(--nc-mithril);">Mithril Sovereign</div><div class="nr-card-req">LVL 85 JOB CHANGE ▸</div></div>
+    <div class="nr-card" style="border-color:rgba(34,211,238,.25);background:rgba(34,211,238,.05);" onclick="openRankPanel('ADAMANT')"><div class="nr-card-letter" style="color:var(--nc-adamant);text-shadow:0 0 12px rgba(34,211,238,.4);">Ad</div><div class="nr-card-name" style="color:var(--nc-adamant);">Adamant Monarch</div><div class="nr-card-req">LVL 120 JOB CHANGE ▸</div></div>
+    <div class="nr-card" style="border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.05);grid-column:1/-1;" onclick="openRankPanel('DIVINE')"><div class="nr-card-letter" style="color:var(--nc-divine);text-shadow:0 0 20px rgba(251,191,36,.6);font-size:36px;">✦</div><div class="nr-card-name" style="color:var(--nc-divine);">Shadow Monarch — Divine</div><div class="nr-card-req">LVL 160 JOB CHANGE · FINAL RANK ▸</div></div>
+  </div>
+</div>
+
+</div><!-- end sw -->
+
+<div class="nav">
+  <div class="nav-item on" onclick="gt(0)" id="ni0"><div class="nav-dot"></div><span class="nav-lbl">STATUS</span></div>
+  <div class="nav-item" onclick="gt(1)" id="ni1"><div class="nav-dot"></div><span class="nav-lbl">QUESTS</span></div>
+  <div class="nav-item" onclick="gt(2)" id="ni2"><div class="nav-dot"></div><span class="nav-lbl">LOG</span></div>
+</div>
+
+<!-- ═══ STAT PANEL ═══ -->
+<div class="stat-panel" id="sp">
+  <button class="sp-back" onclick="closeStat()">← BACK</button>
+  <div class="sp-hdr">
+    <div class="sp-abbr" id="sp-abbr">SPI</div>
+    <div><div class="sp-name" id="sp-name">SPIRIT</div><div class="sp-stats-lbl" id="sp-stats"></div></div>
+  </div>
+  <div class="sketch-wrap" id="sketch-wrap"><canvas class="sketch-canvas" id="sketch-canvas"></canvas></div>
+  <div class="sp-desc" id="sp-desc"></div>
+  <div class="sp-sec">DAILY QUESTS</div>
+  <div id="sp-quests"></div>
+</div>
+
+<!-- ═══ STREAK PANEL ═══ -->
+<div class="streak-panel" id="sgp">
+  <button class="sp-back" onclick="closeStreak()">← BACK</button>
+  <div class="sg-title">CONSISTENCY</div>
+  <div class="sg-sub">WEEKLY XP & GRADE</div>
+  <div class="sg-week-nav">
+    <button class="sg-week-btn" onclick="streakNavWeek(-1)">◂ PREV</button>
+    <span class="sg-week-lbl" id="sg-week-lbl">THIS WEEK</span>
+    <button class="sg-week-btn" onclick="streakNavWeek(1)">NEXT ▸</button>
+  </div>
+  <div class="sg-graph" id="sg-graph"></div>
+  <div class="sg-day-editor" id="sg-day-editor">
+    <div class="sg-de-title" id="sg-de-title">EDIT DAY</div>
+    <div class="sg-de-grid">
+      <div class="sg-de-row"><div class="sg-de-lbl">XP EARNED</div><input class="sg-de-inp" id="sg-de-xp" type="number" min="0" placeholder="0"/></div>
+      <div class="sg-de-row"><div class="sg-de-lbl">GRADE</div>
+        <select class="sg-de-inp" id="sg-de-grade"><option value="—">—</option><option>S</option><option>A</option><option>B</option><option>C</option><option>D</option><option>F</option></select>
+      </div>
+    </div>
+    <div class="sg-de-btns">
+      <button class="sg-de-save" onclick="saveDayEdit()">SAVE</button>
+      <button class="sg-de-cancel" onclick="cancelDayEdit()">CANCEL</button>
+    </div>
+  </div>
+  <div class="sg-stats">
+    <div class="sg-stat"><span class="sg-stat-lbl">STREAK</span><div class="sg-stat-val" id="sg-streak">0</div></div>
+    <div class="sg-stat"><span class="sg-stat-lbl">BEST</span><div class="sg-stat-val gld" id="sg-best">0</div></div>
+    <div class="sg-stat"><span class="sg-stat-lbl">WEEK XP</span><div class="sg-stat-val" id="sg-weekxp">0</div></div>
+  </div>
+  <div class="sg-verdict"><span class="sg-verdict-lbl">SYSTEM ASSESSMENT</span><div class="sg-verdict-txt" id="sg-verdict-txt">—</div></div>
+</div>
+
+<!-- ═══ HQ PANEL ═══ -->
+<div class="hq-panel" id="hqp">
+  <button class="hqp-back" onclick="closeHQPanel()">← BACK</button>
+  <span class="hqp-ey">◈ SHADOW MONARCH SYSTEM ◈</span>
+  <div class="hqp-title">HIDDEN QUESTS</div>
+  <div class="hqp-line"></div>
+  <div class="hqp-intro">"The System offers these trials to those who have shown they can be trusted with more. They are not required. They are offered. What you do with them reveals who you are becoming."</div>
+  <div class="hq-item" data-id="hq1" data-xp="15" data-stat="vit"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--vit);border-color:rgba(0,255,136,.3);">VIT</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Meditation (10–15 min)</div><div class="hq-flavor">"The mind that can sit with itself cannot be broken by the market, by loss, or by fear. Sit. Breathe. Do not run from silence."</div></div></div>
+  <div class="hq-item" data-id="hq2" data-xp="15" data-stat="vit"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--vit);border-color:rgba(0,255,136,.3);">VIT</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Breathwork (5–10 min)</div><div class="hq-flavor">"Control your breath, control your state. The player who panics under pressure has not trained his nervous system."</div></div></div>
+  <div class="hq-item" data-id="hq3" data-xp="15" data-stat="ath"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--ath);border-color:rgba(0,180,216,.3);">ATH</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Cardio Skill Session (20–30 min)</div><div class="hq-flavor">"Basketball, shadow boxing, jump rope, sprints — choose your weapon. The body remembers what you repeat."</div></div></div>
+  <div class="hq-item" data-id="hq4" data-xp="15" data-stat="ath"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--ath);border-color:rgba(0,180,216,.3);">ATH</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Flexibility &amp; Mobility Deep Work (20 min)</div><div class="hq-flavor">"The hunter who cannot move freely cannot fight freely. Spend time in the positions that are hard."</div></div></div>
+  <div class="hq-item" data-id="hq5" data-xp="15" data-stat="cha"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--cha);border-color:rgba(0,255,221,.3);">CHA</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Outward Character Time (20–30 min)</div><div class="hq-flavor">"Voice work, reading on leadership, studying how great men communicated. Your words are weapons. Sharpen them."</div></div></div>
+  <div class="hq-item" data-id="hq6" data-xp="15" data-stat="cha"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--cha);border-color:rgba(0,255,221,.3);">CHA</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Intentional Family Presence (30 min)</div><div class="hq-flavor">"Put the phone down. Be in the room completely. This is investment in the people who will matter when nothing else does."</div></div></div>
+  <div class="hq-item" data-id="hq7" data-xp="15" data-stat="int"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--int);border-color:rgba(68,136,255,.3);">INT</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Read 20 Pages — Non-Trading</div><div class="hq-flavor">"The trader who only studies markets knows only markets. The man who reads widely thinks widely."</div></div></div>
+  <div class="hq-item" data-id="hq8" data-xp="15" data-stat="int"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--int);border-color:rgba(68,136,255,.3);">INT</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Second Study Block (rest day)</div><div class="hq-flavor">"On the days your body recovers, your mind can advance. One extra hour compounds differently than one extra rep."</div></div></div>
+  <div class="hq-item" data-id="hq9" data-xp="15" data-stat="pow"><div class="hq-box">◈</div><div class="hq-body"><div class="hq-meta"><span class="hq-stat-tag" style="color:var(--pow);border-color:rgba(255,34,68,.3);">POW</span><span class="hq-xp-tag">+15 XP</span></div><div class="hq-name">Progressive Overload Attempt</div><div class="hq-flavor">"The System is watching whether you stayed comfortable or pushed the boundary. Log it honestly."</div></div></div>
+</div>
+
+<!-- ═══ JOB CHANGE PANEL ═══ -->
+<div class="jcpanel" id="jcpanel">
+  <button class="jcpanel-back" onclick="closeJCPanel()">← BACK</button>
+  <div class="jcp-title">JOB CHANGE QUEST</div>
+  <div class="jcp-sub" id="jcp-sub">THRESHOLD REACHED</div>
+  <div class="jcp-line"></div>
+  <div class="jcp-flavor" id="jcp-flavor"></div>
+  <div id="jcp-quests"></div>
+  <button class="jc-complete-btn" id="jcp-complete-btn" onclick="completeJobChange()">◈ CLAIM JOB CHANGE</button>
+</div>
+
+<!-- ═══ EDIT MODAL ═══ -->
+<div class="mo-bg" id="mobg">
+  <div class="mo">
+    <h2>UPDATE STATUS</h2>
+    <div class="mo-grid">
+      <div class="fl"><label>TODAY'S GRADE</label><select id="fg"><option value="—">—</option><option>S</option><option>A</option><option>B</option><option>C</option><option>D</option><option>F</option></select></div>
+      <div class="fl"><label>STREAK (days)</label><input id="fst" type="number" min="0"/></div>
+      <div class="fl"><label>BEST STREAK</label><input id="fbe" type="number" min="0"/></div>
+      <div class="fl"><label>TOTAL XP</label><input id="ftx" type="number" min="0"/></div>
+      <div class="fl"><label>SPI all-time</label><input id="f-spi" type="number" min="0"/></div>
+      <div class="fl"><label>INT all-time</label><input id="f-int" type="number" min="0"/></div>
+      <div class="fl"><label>POW all-time</label><input id="f-pow" type="number" min="0"/></div>
+      <div class="fl"><label>ATH all-time</label><input id="f-ath" type="number" min="0"/></div>
+      <div class="fl"><label>VIT all-time</label><input id="f-vit" type="number" min="0"/></div>
+      <div class="fl"><label>CHA all-time</label><input id="f-cha" type="number" min="0"/></div>
+      <div class="fl"><label>SPI week XP</label><input id="fw-spi" type="number" min="0"/></div>
+      <div class="fl"><label>INT week XP</label><input id="fw-int" type="number" min="0"/></div>
+      <div class="fl"><label>POW week XP</label><input id="fw-pow" type="number" min="0"/></div>
+      <div class="fl"><label>ATH week XP</label><input id="fw-ath" type="number" min="0"/></div>
+      <div class="fl"><label>VIT week XP</label><input id="fw-vit" type="number" min="0"/></div>
+      <div class="fl"><label>CHA week XP</label><input id="fw-cha" type="number" min="0"/></div>
+    </div>
+    <div class="mo-btns"><button class="btn btn-c" onclick="closeMo()">CANCEL</button><button class="btn btn-s" onclick="saveData()">SAVE</button></div>
+  </div>
+</div>
+
+<!-- ═══ SPRINT SETUP MODAL ═══ -->
+<div id="sprintmo">
+  <div class="sprint-mo">
+    <h2>SET SPRINT START</h2>
+    <div class="fl"><label>START DATE</label><input id="sprint-date-inp" type="date"/></div>
+    <div class="mo-btns" style="margin-top:14px;"><button class="btn btn-c" onclick="closeSprintSetup()">CANCEL</button><button class="btn btn-s" onclick="saveSprintStart()">SAVE</button></div>
+  </div>
+</div>
+
+<!-- ═══ OVERLAYS ═══ -->
+<div class="ov" id="luo"><div class="lu-ey">◈ SYSTEM NOTIFICATION ◈</div><div class="lu-n" id="lun">LEVEL 2</div><div class="lu-s">THE SYSTEM ACKNOWLEDGES YOUR GROWTH</div><div class="lu-m">The next threshold is unknown. Keep climbing.</div><button class="obtn" onclick="dismissLU()">CONTINUE →</button></div>
+<div class="ov" id="ruo"><div class="ru-ey">◈ RANK ADVANCEMENT ◈</div><div class="ru-l" id="rul">D</div><div class="ru-t" id="rut">BRONZE GATE HUNTER</div><div class="ru-s" id="rus">Pattern forming. The system is taking hold.</div><button class="obtn gld" onclick="dismissRU()">ARISE →</button></div>
+<div class="ov" id="smo"><div class="sm-n" id="smn">7</div><div class="sm-l">DAY STREAK</div><div class="sm-m" id="smm">Seven days of showing up. The habit is forming.</div><button class="obtn grn" onclick="dismissSM()">KEEP GOING →</button></div>
+<div class="ov" id="jco"><div class="jc-ov-ey">◈ SYSTEM ALERT ◈</div><div class="jc-ov-icon" id="jco-icon">◈</div><div class="jc-ov-title">JOB CHANGE AVAILABLE</div><div class="jc-ov-msg" id="jco-msg">A hidden threshold has been reached. The System offers a trial.</div><button class="obtn pur" onclick="dismissJCO()">VIEW QUEST →</button></div>
+<div class="ov" id="nro"><div class="nr-ov-letter" id="nro-letter">Fe</div><div class="nr-ov-name" id="nro-name">IRON COMMANDER</div><div class="nr-ov-msg" id="nro-msg">The job change is complete. A new title has been bestowed.</div><button class="obtn pur" onclick="dismissNRO()">ACKNOWLEDGED →</button></div>
+
+<div class="grade-ov" id="gov-b"><div class="gov-ey">◈ SYSTEM ASSESSMENT ◈</div><div class="gov-grade">B</div><div class="gov-lbl">STRONG DAY</div><div class="gov-msg">You showed up and delivered. The standard is rising. Keep pushing.</div><button class="gov-dismiss" onclick="dismissGradeAnim()">ACKNOWLEDGED →</button></div>
+<div class="grade-ov" id="gov-a"><div class="gov-ey">◈ SYSTEM ASSESSMENT ◈</div><div class="gov-grade">A</div><div class="gov-lbl">OUTSTANDING</div><div class="gov-msg">The system recognises excellence. This is who you are when you decide to be. Remember this feeling.</div><button class="gov-dismiss" onclick="dismissGradeAnim()">ACKNOWLEDGED →</button></div>
+<div class="grade-ov" id="gov-s"><div class="gov-ey">◈ SYSTEM ASSESSMENT ◈</div><div class="gov-grade">S</div><div class="gov-lbl">BEYOND EXCEPTIONAL</div><div class="gov-msg">The Gate bows before you. This is what national level performance looks like on an ordinary day.</div><button class="gov-dismiss" onclick="dismissGradeAnim()">ACKNOWLEDGED →</button></div>
+
+<div class="rank-panel" id="rkp">
+  <button class="rnk-back" onclick="closeRankPanel()">← BACK</button>
+  <div class="rnk-hero"><div class="rnk-letter" id="rnk-letter">E</div><div class="rnk-info"><div class="rnk-name" id="rnk-name">AWAKENED HUNTER</div><div class="rnk-req" id="rnk-req">ENTRY RANK</div></div></div>
+  <div class="rnk-desc" id="rnk-desc"></div>
+  <div class="rnk-how-lbl">HOW TO ADVANCE</div>
+  <div class="rnk-how" id="rnk-how"></div>
+  <div class="rnk-next" id="rnk-next-wrap"><span class="rnk-next-lbl">NEXT RANK</span><div class="rnk-next-txt" id="rnk-next-txt"></div></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+// ══════════════════════════════════════════════
+//  LEVEL THRESHOLDS — 2× XP cost vs original
+//  (original used ~y; this doubles: 2y = x)
+// ══════════════════════════════════════════════
+const LVL=(function(){
+  let s=0xdeadbeef;
+  function r(a,b){s=Math.imul(s^s>>>16,0x45d9f3b);s=Math.imul(s^s>>>16,0x45d9f3b);s=s^s>>>16;return a+(Math.abs(s)%(b-a+1));}
+  const t=[0];let c=0;
+  for(let i=1;i<=200;i++){
+    let x;
+    // Base values doubled (≈ 2× original)
+    if(i<=5)x=r(110,190);else if(i<=10)x=r(220,330);else if(i<=20)x=r(380,580);
+    else if(i<=35)x=r(680,980);else if(i<=55)x=r(1060,1560);else if(i<=80)x=r(1760,2360);
+    else if(i<=110)x=r(2720,3720);else if(i<=140)x=r(4320,5720);
+    else if(i<=170)x=r(6300,8300);else x=r(9500,12700);
+    x=Math.round(x/5)*5;c+=x;t.push(c);
+  }
+  return t;
+})();
+
+// ══════════════════════════════════════════════
+//  STAT CONVERSION — 2× harder (2y = x → sqrt(x/2)*1.7)
+// ══════════════════════════════════════════════
+function xpToStat(xp){return xp>0?Math.floor(Math.sqrt(xp/2)*1.7):0;}
+
+// ══════════════════════════════════════════════
+//  NEW BONUS RANKS (10% harder internally)
+//  These sit ABOVE the E-★ track and need Job Change Quests
+// ══════════════════════════════════════════════
+const NEW_RANKS=[
+  {key:'IRON',letter:'Fe',name:'Iron Commander',color:'#9ea7ad',lvl:30},
+  {key:'STEEL',letter:'St',name:'Steel Commander',color:'#5c8fbd',lvl:55},
+  {key:'MITHRIL',letter:'Mi',name:'Mithril Sovereign',color:'#c084fc',lvl:85},
+  {key:'ADAMANT',letter:'Ad',name:'Adamant Monarch',color:'#22d3ee',lvl:120},
+  {key:'DIVINE',letter:'✦',name:'Shadow Monarch — Divine',color:'#fbbf24',lvl:160},
+];
+
+// New rank level thresholds are 10% harder (multiply by 1.1)
+const NR_LVL=NEW_RANKS.reduce((a,r)=>{a[r.key]=Math.ceil(r.lvl*1.1);return a;},{});
+
+const JC_QUESTS={
+  IRON:[
+    {name:'The Iron Resolve',desc:'Complete 7 consecutive days without missing a single mandatory quest (q1–q5, q3, q10)',reward:'+50 bonus XP on completion'},
+    {name:'The First Gate Trial',desc:'Reach a B grade or higher on 3 different days within the same week',reward:'IRON title unlocked'},
+  ],
+  STEEL:[
+    {name:'The Steel Discipline',desc:'Complete every POW and SPI quest for 5 consecutive days without a single miss',reward:'+75 bonus XP on completion'},
+    {name:'The Second Gate Trial',desc:'Hit a total of 1000 weekly XP across any single week',reward:'STEEL title unlocked'},
+  ],
+  MITHRIL:[
+    {name:'The Mithril Standard',desc:'Achieve A grade or higher 5 times in a single week — any combination of days',reward:'+100 bonus XP on completion'},
+    {name:'The Third Gate Trial',desc:'Have all 6 stats with at least 50 stat points each simultaneously',reward:'MITHRIL title unlocked'},
+  ],
+  ADAMANT:[
+    {name:'The Monarch\'s Trial',desc:'Complete the full quest list including at least 5 hidden quests, on the same day',reward:'+150 bonus XP on completion'},
+    {name:'The Fourth Gate',desc:'Maintain a 30-day streak — no breaks, no exceptions',reward:'ADAMANT title unlocked'},
+  ],
+  DIVINE:[
+    {name:'The Final Awakening',desc:'Finish the 100-day sprint with an average grade of B or higher across all logged days',reward:'+500 bonus XP · permanent title'},
+    {name:'Shadow Monarch Ascension',desc:'Complete 50 hidden quests total across the sprint — the System counts every one',reward:'DIVINE title unlocked'},
+  ],
+};
+
+const JC_FLAVOR={
+  IRON:'"The System has detected the beginning of true discipline. Iron does not bend. Iron does not negotiate. Take the trial or remain as you were."',
+  STEEL:'"You have proven consistency. But consistency without power is just routine. Steel is forged under pressure. The trial begins."',
+  MITHRIL:'"Few hunters reach this threshold. Mithril is rare not because it is hard to find, but because only certain hunters are worthy of carrying it."',
+  ADAMANT:'"The Gate offers no more intermediate steps. This is the trial of the Monarch. There is no safety net. There is only through."',
+  DIVINE:'"The Shadow Monarch does not ascend. He was always above. This is recognition, not elevation. The final trial is yours to take."',
+};
+
+const RLV={E:1,D:12,C:28,B:52,A:80,S:115,'★':155};
+const RNM={E:'Awakened Hunter',D:'Bronze Gate Hunter',C:'Silver Gate Hunter',B:'Gold Gate Hunter',A:"Shadow Monarch's Guard",S:'S-Rank Hunter','★':'National Level Hunter'};
+const RMS={D:'Pattern forming. The system is taking hold.',C:'Discipline is real. Habits are automatic.',B:'High performer. Few people reach here.',A:'Elite. Your standard is above almost everyone.',S:'Exceptional. The system bends around your will.','★':'You have become the system. Unstoppable.'};
+const RO=['E','D','C','B','A','S','★'];
+const STATS=['spi','int','pow','ath','vit','cha'];
+const SC={spi:'#c9a84c',int:'#4488ff',pow:'#ff2244',ath:'#00b4d8',vit:'#00ff88',cha:'#00ffdd'};
+const SN={spi:'SPIRIT',int:'INTELLIGENCE',pow:'POWER',ath:'ATHLETICISM',vit:'VITALITY',cha:'CHARACTER'};
+const HQ_IDS=['hq1','hq2','hq3','hq4','hq5','hq6','hq7','hq8','hq9'];
+
+const SHADOW_ARMY_DEFS={
+  hq1:{rank:'Shadow Knight',name:'IGRIS',skill:'Meditation Master — Immunity to tilt'},
+  hq2:{rank:'Shadow Knight',name:'BERU',skill:'Breath Control — +5% stat retention'},
+  hq3:{rank:'Shadow Soldier',name:'KAISEL',skill:'Cardio Captain — Sprint endurance'},
+  hq4:{rank:'Shadow Soldier',name:'TUSK',skill:'Mobility Guard — Flexibility elite'},
+  hq5:{rank:'Shadow Marshal',name:'BELLION',skill:'Voice of Command — CHA amplifier'},
+  hq6:{rank:'Shadow Soldier',name:'GREED',skill:'Family Anchor — CHA stability'},
+  hq7:{rank:'Shadow Scholar',name:'TANK',skill:'Reader — INT overflow bonus'},
+  hq8:{rank:'Shadow Scholar',name:'IRON',skill:'Studious — rest day INT master'},
+  hq9:{rank:'Shadow Marshal',name:'SHADOW',skill:'Overload Protocol — POW spike'},
+};
+
+const STAT_INFO={
+  spi:{name:'SPIRIT',color:'#c9a84c',desc:'Spirit is the foundation everything else stands on. It measures the depth and consistency of your relationship with God — not performance, not religion, but genuine closeness. Every morning prayer, every night Scripture, every moment you choose intentionality with your faith. This stat cannot be faked. The System knows the difference between going through the motions and actually showing up.',quests:[{t:'Morning Prayer & Bible (04:30 — 30 min)',x:20},{t:'Night Prayer & Scripture (19:55 — 30 min)',x:20}]},
+  int:{name:'INTELLIGENCE',color:'#4488ff',desc:'Intelligence measures the sharpening of your mind — specifically your trading edge and capacity for deep focused work. Every deep work block, every chart replay, every concept you truly understand and not just recognise. The market rewards those who have done the work others were not willing to do.',quests:[{t:'Deep Work Block #1 — Study / CRT (90 min)',x:15},{t:'Deep Work Block #2 (90 min)',x:10},{t:'Deep Work Block #3 (90 min)',x:10},{t:'Deep Work Block #4 (90 min)',x:10}]},
+  pow:{name:'POWER',color:'#ff2244',desc:'Power measures the physical structure you are building in the gym. Every session, every warm-up, every attempt at progressive overload. This is not about how you look. It is about building a body that performs, endures, and does not quit.',quests:[{t:'Warm-Up protocol (10–12 min)',x:5},{t:'Workout — full session (05:15 — 75 min)',x:15}]},
+  ath:{name:'ATHLETICISM',color:'#00b4d8',desc:'Athleticism measures how you move — coordination, agility, sport skill, explosive power, and movement quality. The gym builds the structure. ATH builds the athlete inside it.',quests:[{t:'Active Recovery / Sport Session (Saturday — 60 min)',x:10},{t:'Boxing Skill Work / Mobility (Wednesday — 25 min)',x:5}]},
+  vit:{name:'VITALITY',color:'#00ff88',desc:'Vitality is inner endurance — the daily war against the version of yourself that wants to medicate, drift, scroll, and avoid. It measures your self-mastery: whether you protect your sleep, tend to your environment, reflect honestly in your journal.',quests:[{t:'Up at 04:30 — no snooze, bed made, dressed',x:5},{t:'Journaling block (19:00 — 45 min)',x:10},{t:'Lunch walk (20–30 min)',x:5},{t:'Lights out by 21:00',x:5},{t:'House cleaned',x:5},{t:'Next-day prep done (before 20:30)',x:5}]},
+  cha:{name:'CHARACTER',color:'#00ffdd',desc:'Character measures who you are in relation to others and how intentionally you are developing the man you want to become. Partner time with full presence. Family investment. Voice work, reading on leadership, outward character development.',quests:[{t:'Partner time — full attention',x:10}]}
+};
+
+const SYSTEM_VOICES=[
+  "The Gate does not care how you feel. It only cares whether you showed up.",
+  "Yesterday's discipline is today's standard. Raise the bar.",
+  "Every quest completed is a vote for the man you are becoming.",
+  "The Shadow Monarch did not arise by accident. Neither will you.",
+  "Comfort is the enemy of the elite. Seek discomfort — that is where growth lives.",
+  "The system watches. The system remembers. The system rewards those who don't quit.",
+  "Jinwoo did not become S-Rank in a day. He showed up when no one was watching.",
+  "Your shadows grow stronger each time you complete what others abandon.",
+  "The Gate does not open for the prepared. It opens for the consistent.",
+  "Iron sharpens iron. Your daily quests are the whetstone.",
+];
+
+// ══════════════════════════════════════════════
+//  PALETTE SYSTEM
+//  Each rank has its own full CSS variable set.
+//  applyPalette() swaps them on the :root.
+//  CSS transitions (2s ease) make it smooth.
+// ══════════════════════════════════════════════
+const PALETTES={
+  // E — Dark ember gold. Raw awakening.
+  E:{
+    bg:'#252523',
+    gold:'#c9a84c',gg:'rgba(201,168,76,0.5)',gf:'rgba(51,48,39,0.55)',gb:'rgba(201,168,76,0.28)',
+    w:'#e8e8e6',wg:'rgba(232,232,230,0.45)',wb:'rgba(255,255,255,0.12)',
+    td:'rgba(180,180,176,0.42)',brd:'rgba(255,255,255,0.09)',txt:'rgba(220,220,218,0.78)',
+    glowTop:'rgba(201,168,76,.04)',gridLine:'rgba(201,168,76,.02)',
+    scanline:'rgba(201,168,76,.06)',
+    label:'AWAKENED · E-RANK',
+  },
+  // D — Cold steel blue. Pattern forming.
+  D:{
+    bg:'#1a1e28',
+    gold:'#4a90d9',gg:'rgba(74,144,217,0.5)',gf:'rgba(20,32,58,0.55)',gb:'rgba(74,144,217,0.28)',
+    w:'#c8d8f0',wg:'rgba(200,216,240,0.45)',wb:'rgba(100,160,255,0.12)',
+    td:'rgba(140,170,210,0.42)',brd:'rgba(100,160,255,0.09)',txt:'rgba(200,220,245,0.78)',
+    glowTop:'rgba(74,144,217,.05)',gridLine:'rgba(74,144,217,.025)',
+    scanline:'rgba(74,144,217,.06)',
+    label:'BRONZE GATE · D-RANK',
+  },
+  // C — Frost silver. Discipline crystallised.
+  C:{
+    bg:'#1c1f22',
+    gold:'#a8b8c8',gg:'rgba(168,184,200,0.5)',gf:'rgba(30,36,42,0.55)',gb:'rgba(168,184,200,0.28)',
+    w:'#dce8f0',wg:'rgba(220,232,240,0.45)',wb:'rgba(200,220,240,0.12)',
+    td:'rgba(160,180,200,0.42)',brd:'rgba(200,220,240,0.09)',txt:'rgba(210,225,238,0.78)',
+    glowTop:'rgba(168,184,200,.04)',gridLine:'rgba(168,184,200,.02)',
+    scanline:'rgba(200,220,240,.06)',
+    label:'SILVER GATE · C-RANK',
+  },
+  // B — Deep molten gold. Power surging.
+  B:{
+    bg:'#211c10',
+    gold:'#e8b84b',gg:'rgba(232,184,75,0.55)',gf:'rgba(60,48,12,0.6)',gb:'rgba(232,184,75,0.32)',
+    w:'#f0e4c0',wg:'rgba(240,228,192,0.5)',wb:'rgba(255,210,80,0.14)',
+    td:'rgba(200,170,90,0.45)',brd:'rgba(255,210,80,0.1)',txt:'rgba(238,220,170,0.82)',
+    glowTop:'rgba(232,184,75,.07)',gridLine:'rgba(232,184,75,.03)',
+    scanline:'rgba(232,184,75,.08)',
+    label:'GOLD GATE · B-RANK',
+  },
+  // A — Deep violet shadow energy. Monarch's guard.
+  A:{
+    bg:'#140e1e',
+    gold:'#9b6fd4',gg:'rgba(155,111,212,0.5)',gf:'rgba(38,20,58,0.6)',gb:'rgba(155,111,212,0.28)',
+    w:'#d8c8f0',wg:'rgba(216,200,240,0.45)',wb:'rgba(160,100,255,0.14)',
+    td:'rgba(160,130,200,0.42)',brd:'rgba(160,100,255,0.1)',txt:'rgba(210,190,240,0.80)',
+    glowTop:'rgba(155,111,212,.06)',gridLine:'rgba(155,111,212,.025)',
+    scanline:'rgba(155,111,212,.07)',
+    label:"SHADOW MONARCH'S GUARD · A-RANK",
+  },
+  // S — Pure ice cyan. Cold dominance.
+  S:{
+    bg:'#081820',
+    gold:'#00c8e8',gg:'rgba(0,200,232,0.5)',gf:'rgba(0,36,50,0.6)',gb:'rgba(0,200,232,0.28)',
+    w:'#b8f0ff',wg:'rgba(184,240,255,0.45)',wb:'rgba(0,200,232,0.14)',
+    td:'rgba(80,180,210,0.42)',brd:'rgba(0,200,232,0.1)',txt:'rgba(170,230,248,0.80)',
+    glowTop:'rgba(0,200,232,.06)',gridLine:'rgba(0,200,232,.025)',
+    scanline:'rgba(0,200,232,.08)',
+    label:'S-RANK HUNTER',
+  },
+  // ★ — Black void with blazing gold. Unstoppable.
+  '★':{
+    bg:'#0a0808',
+    gold:'#ffcc00',gg:'rgba(255,204,0,0.6)',gf:'rgba(40,30,0,0.7)',gb:'rgba(255,204,0,0.35)',
+    w:'#fff8d0',wg:'rgba(255,248,208,0.55)',wb:'rgba(255,204,0,0.18)',
+    td:'rgba(220,180,60,0.5)',brd:'rgba(255,204,0,0.12)',txt:'rgba(255,240,180,0.88)',
+    glowTop:'rgba(255,204,0,.09)',gridLine:'rgba(255,204,0,.035)',
+    scanline:'rgba(255,204,0,.1)',
+    label:'NATIONAL LEVEL HUNTER · ★',
+  },
+  // Job Change ranks
+  IRON:{
+    bg:'#161718',
+    gold:'#9ea7ad',gg:'rgba(158,167,173,0.5)',gf:'rgba(28,30,32,0.6)',gb:'rgba(158,167,173,0.28)',
+    w:'#c8d0d8',wg:'rgba(200,208,216,0.45)',wb:'rgba(158,167,173,0.14)',
+    td:'rgba(140,150,160,0.42)',brd:'rgba(158,167,173,0.1)',txt:'rgba(190,200,210,0.80)',
+    glowTop:'rgba(158,167,173,.05)',gridLine:'rgba(158,167,173,.02)',
+    scanline:'rgba(158,167,173,.06)',
+    label:'IRON COMMANDER',
+  },
+  STEEL:{
+    bg:'#101620',
+    gold:'#5c8fbd',gg:'rgba(92,143,189,0.5)',gf:'rgba(16,28,44,0.6)',gb:'rgba(92,143,189,0.28)',
+    w:'#b0c8e0',wg:'rgba(176,200,224,0.45)',wb:'rgba(92,143,189,0.14)',
+    td:'rgba(100,140,180,0.42)',brd:'rgba(92,143,189,0.1)',txt:'rgba(160,200,230,0.80)',
+    glowTop:'rgba(92,143,189,.06)',gridLine:'rgba(92,143,189,.025)',
+    scanline:'rgba(92,143,189,.07)',
+    label:'STEEL COMMANDER',
+  },
+  MITHRIL:{
+    bg:'#100c1c',
+    gold:'#c084fc',gg:'rgba(192,132,252,0.5)',gf:'rgba(28,18,44,0.6)',gb:'rgba(192,132,252,0.28)',
+    w:'#e0c8ff',wg:'rgba(224,200,255,0.45)',wb:'rgba(192,132,252,0.14)',
+    td:'rgba(160,110,210,0.42)',brd:'rgba(192,132,252,0.1)',txt:'rgba(210,180,250,0.80)',
+    glowTop:'rgba(192,132,252,.07)',gridLine:'rgba(192,132,252,.028)',
+    scanline:'rgba(192,132,252,.08)',
+    label:'MITHRIL SOVEREIGN',
+  },
+  ADAMANT:{
+    bg:'#041418',
+    gold:'#22d3ee',gg:'rgba(34,211,238,0.5)',gf:'rgba(4,32,40,0.65)',gb:'rgba(34,211,238,0.28)',
+    w:'#a0eeff',wg:'rgba(160,238,255,0.45)',wb:'rgba(34,211,238,0.14)',
+    td:'rgba(40,180,210,0.42)',brd:'rgba(34,211,238,0.1)',txt:'rgba(140,230,248,0.80)',
+    glowTop:'rgba(34,211,238,.07)',gridLine:'rgba(34,211,238,.028)',
+    scanline:'rgba(34,211,238,.09)',
+    label:'ADAMANT MONARCH',
+  },
+  // DIVINE — Pure black void + blinding divine gold. The apex.
+  DIVINE:{
+    bg:'#050404',
+    gold:'#fbbf24',gg:'rgba(251,191,36,0.65)',gf:'rgba(40,28,0,0.75)',gb:'rgba(251,191,36,0.38)',
+    w:'#fff8e0',wg:'rgba(255,248,224,0.6)',wb:'rgba(251,191,36,0.2)',
+    td:'rgba(230,190,60,0.55)',brd:'rgba(251,191,36,0.14)',txt:'rgba(255,244,196,0.9)',
+    glowTop:'rgba(251,191,36,.12)',gridLine:'rgba(251,191,36,.04)',
+    scanline:'rgba(251,191,36,.12)',
+    label:'SHADOW MONARCH · DIVINE',
+  },
+};
+
+let _currentPaletteKey='';
+
+function getPaletteKey(rankKey,jobRanks){
+  // Job Change ranks take priority — show the highest unlocked one
+  if(jobRanks&&jobRanks.length>0){
+    const top=jobRanks[jobRanks.length-1];
+    if(PALETTES[top])return top;
+  }
+  return rankKey;
+}
+
+function applyPalette(key,force=false){
+  if(key===_currentPaletteKey&&!force)return;
+  const p=PALETTES[key]||PALETTES['E'];
+  _currentPaletteKey=key;
+  const r=document.documentElement;
+  r.style.setProperty('--bg',p.bg);
+  r.style.setProperty('--gold',p.gold);
+  r.style.setProperty('--gg',p.gg);
+  r.style.setProperty('--gf',p.gf);
+  r.style.setProperty('--gb',p.gb);
+  r.style.setProperty('--w',p.w);
+  r.style.setProperty('--wg',p.wg);
+  r.style.setProperty('--wb',p.wb);
+  r.style.setProperty('--td',p.td);
+  r.style.setProperty('--brd',p.brd);
+  r.style.setProperty('--txt',p.txt);
+  // Update bg-glow and bg-grid inline styles dynamically
+  const glow=document.querySelector('.bg-glow');
+  if(glow)glow.style.background=`radial-gradient(ellipse at 50% -5%,${p.glowTop} 0%,transparent 55%)`;
+  const grid=document.querySelector('.bg-grid');
+  if(grid)grid.style.backgroundImage=`linear-gradient(${p.gridLine} 1px,transparent 1px),linear-gradient(90deg,${p.gridLine} 1px,transparent 1px)`;
+  const scan=document.querySelector('.scanline');
+  if(scan)scan.style.background=`linear-gradient(90deg,transparent,${p.scanline},transparent)`;
+  document.body.style.background=p.bg;
+  // Show palette label briefly as a system notification
+  showPaletteLabel(p.label,key);
+}
+
+function showPaletteLabel(label,key){
+  // Only show on actual rank change, not on initial load
+  if(!_paletteInitDone)return;
+  const p=PALETTES[key]||PALETTES['E'];
+  let el=document.getElementById('palette-flash');
+  if(!el){
+    el=document.createElement('div');el.id='palette-flash';
+    el.style.cssText=`position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:600;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:4px;padding:7px 16px;border:1px solid;pointer-events:none;transition:opacity .5s ease;white-space:nowrap;`;
+    document.body.appendChild(el);
+  }
+  el.textContent='◈ '+label+' ◈';
+  el.style.color=p.gold;el.style.borderColor=p.gb;el.style.background=p.gf;
+  el.style.opacity='1';
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{el.style.opacity='0';},2800);
+}
+
+let _paletteInitDone=false;
+
+const DAY_COLORS={0:'#C9A84C',1:'#2E75B6',2:'#C0392B',3:'#27AE60',4:'#8E44AD',5:'#D35400',6:'#16A085'};
+const DAY_LABELS={0:'SUN',1:'MON',2:'TUE',3:'WED',4:'THU',5:'FRI',6:'SAT'};
+const GRADE_COLORS={S:'#cc88ff',A:'#c9a84c',B:'rgba(210,228,255,.9)',C:'rgba(180,180,176,.6)',D:'rgba(255,34,68,.6)',F:'rgba(255,34,68,.3)','—':'transparent'};
+
+// Storage keys
+const QK=()=>{const d=new Date();return `qsv8_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;};
+const SK='smv9';
+const WK=()=>{const d=new Date();const dy=d.getDay();const m=new Date(d);m.setDate(d.getDate()-dy);return `wk9_${m.getFullYear()}_${m.getMonth()}_${m.getDate()}`;};
+const WG_KEY='wkgoals_v2';
+const SPRINT_KEY='sprintStart_v2';
+const MANUAL_DAY_KEY=(dateStr)=>`manday_${dateStr}`;
+
+const DS={totalxp:0,streak:0,best:0,grade:'—',spi:0,int:0,pow:0,ath:0,vit:0,cha:0,jobRanks:[]};
+const DQ={done:[],penalties:[],verdict:''};
+const DW={spi:0,int:0,pow:0,ath:0,vit:0,cha:0};
+const DEFAULT_GOALS=[
+  {text:'Sleep ramp → 21:00 by Sunday',badge:'ACTIVE'},
+  {text:'Morning Prayer — every day',badge:'ACTIVE'},
+  {text:'Night Prayer — every day',badge:'ACTIVE'},
+  {text:'Warm-Up — every day',badge:'ACTIVE'},
+  {text:'1 Deep Work Block — every day',badge:'ACTIVE'},
+];
+
+// ── THREE-LAYER STORAGE ──
+const _mem={};
+function _lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function _lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function _lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+async function _wsGet(k){try{const r=await window.storage.get(k);return(r&&r.value!=null)?r.value:null;}catch(e){return null;}}
+async function _wsSet(k,v){try{await window.storage.set(k,v);}catch(e){}}
+async function _wsDel(k){try{await window.storage.delete(k);}catch(e){}}
+async function _save(k,v){_mem[k]=v;_lsSet(k,v);await _wsSet(k,v);}
+function _load(k){return _mem[k]||_lsGet(k)||null;}
+async function _erase(k){delete _mem[k];_lsDel(k);await _wsDel(k);}
+async function _preload(keys){for(const k of keys){let v=await _wsGet(k);if(v===null)v=_lsGet(k);if(v!==null){_mem[k]=v;_lsSet(k,v);await _wsSet(k,v);}}}
+
+function lS(){try{return{...DS,...(JSON.parse(_load(SK))||{})};}catch(e){return{...DS};}}
+function lQ(){try{return{...DQ,...(JSON.parse(_load(QK()))||{})};}catch(e){return{...DQ};}}
+function lW(){try{return{...DW,...(JSON.parse(_load(WK()))||{})};}catch(e){return{...DW};}}
+function sS(d){_save(SK,JSON.stringify(d));}
+function sQ(d){_save(QK(),JSON.stringify(d));}
+function sW(d){_save(WK(),JSON.stringify(d));}
+
+// Sprint start date
+function getSprintStart(){
+  const saved=_load(SPRINT_KEY);
+  if(!saved)return new Date(2026,2,18); // 18 Mar 2026, local
+  // If it's a plain date string YYYY-MM-DD (old format), parse as local
+  if(/^\d{4}-\d{2}-\d{2}$/.test(saved.trim())){
+    const [y,m,d]=saved.trim().split('-').map(Number);
+    return new Date(y,m-1,d);
+  }
+  // Otherwise it's a full ISO string saved by the new code
+  const dt=new Date(saved);
+  return new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());
+}
+
+// Weekly goals
+function loadGoals(){
+  const raw=_load(WG_KEY);
+  try{return raw?JSON.parse(raw):DEFAULT_GOALS;}catch(e){return DEFAULT_GOALS;}
+}
+function saveGoals(g){_save(WG_KEY,JSON.stringify(g));}
+
+// Manual day overrides
+function loadManualDay(dateStr){
+  const raw=_load(MANUAL_DAY_KEY(dateStr));
+  try{return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function saveManualDay(dateStr,data){_save(MANUAL_DAY_KEY(dateStr),JSON.stringify(data));}
+
+function gLv(x){let l=1;for(let i=1;i<LVL.length;i++){if(x>=LVL[i])l=i+1;else break;}return Math.min(l,200);}
+function gLP(x,l){if(l>=200)return 100;return Math.max(0,Math.min(99,((x-LVL[l-1])/(LVL[l]-LVL[l-1]))*100));}
+function gRk(l){let r='E';RO.forEach(k=>{if(l>=RLV[k])r=k;});return r;}
+function gRP(l){const r=gRk(l);const ri=RO.indexOf(r);if(ri>=RO.length-1)return{p:100,n:'MAX'};const nr=RO[ri+1];return{p:Math.max(0,Math.min(100,((l-RLV[r])/(RLV[nr]-RLV[r]))*100)),n:nr};}
+function currentRank(){const s=lS();const lv=gLv(s.totalxp);return gRk(lv);}
+
+const GL={A:'Outstanding',B:'Strong day',C:'Acceptable',D:'Below standard',F:'Gate not cleared','—':'not graded',S:'Beyond exceptional'};
+function calcGrade(xp){
+  if(xp>=160)return{g:'S',s:'Beyond exceptional'};
+  if(xp>=120)return{g:'A',s:'Outstanding'};
+  if(xp>=90)return{g:'B',s:'Strong day'};
+  if(xp>=60)return{g:'C',s:'Acceptable'};
+  if(xp>=30)return{g:'D',s:'Below standard'};
+  return{g:'F',s:'Gate not cleared'};
+}
+
+// Max daily XP (all quests + all hidden)
+function maxDailyXP(){
+  let tot=0;
+  document.querySelectorAll('.q,.hq-item').forEach(el=>tot+=(parseInt(el.dataset.xp)||0));
+  return tot;
+}
+
+// ── RENDER STATUS ──
+function rStat(an){
+  const s=lS();const w=lW();
+  const lv=gLv(s.totalxp);const lp=gLP(s.totalxp,lv);
+  const rk=gRk(lv);const rp=gRP(lv);
+  $('rl').textContent=rk;
+  // Color rank letter for new ranks
+  const jobRanks=s.jobRanks||[];
+  if(jobRanks.length>0){
+    const top=jobRanks[jobRanks.length-1];
+    const nr=NEW_RANKS.find(r=>r.key===top);
+    if(nr){$('rl').textContent=nr.letter;$('rl').style.color=nr.color;$('rl').style.textShadow=`0 0 28px ${nr.color}88`;}
+  } else {$('rl').style.color='';$('rl').style.textShadow='';}
+  $('rn').textContent=RNM[rk];
+  $('ln').textContent=lv;$('txn').textContent=s.totalxp.toLocaleString();
+  $('sv').textContent=s.streak;$('bv').textContent=s.best;
+  $('gv').textContent=s.grade;$('gs').textContent=GL[s.grade]||'';
+  $('rpl').textContent=rk+' → '+(rp.n==='MAX'?'MAX':rp.n);
+  $('bs2').textContent=s.best;
+  const sprintStart=getSprintStart();
+  const now=new Date();
+  const dn=Math.max(1,Math.floor((now-sprintStart)/864e5)+1);
+  $('dn').textContent=dn;$('da').textContent=dn;
+  // Update start date display
+  const mo=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  $('startDateDisp').innerHTML=`${sprintStart.getDate()} ${mo[sprintStart.getMonth()]} ${sprintStart.getFullYear()} <button class="dc-edit" onclick="openSprintSetup()">✎</button>`;
+  setTimeout(()=>{
+    $('lf').style.width=lp+'%';$('rf').style.width=rp.p+'%';
+    const maxW=Math.max(...Object.values(w),1);
+    STATS.forEach(k=>{
+      $('p-'+k).textContent=xpToStat(s[k]||0);
+      $('w-'+k).textContent=(w[k]||0)+' XP this week';
+      $('b-'+k).style.width=Math.min(((w[k]||0)/maxW)*100,100)+'%';
+    });
+  },an?400:0);
+  renderTop3(w);
+  renderNRProgress(s,lv);
+  checkJCBanner(s,lv);
+  renderArmyGrid(s);
+  updateSystemVoice();
+  // Apply palette based on current rank / top job rank
+  applyPalette(getPaletteKey(rk,jobRanks));
+}
+
+function renderNRProgress(s,lv){
+  const jobRanks=s.jobRanks||[];
+  const wrap=$('nr-prog-wrap');if(!wrap)return;
+  const nextNR=NEW_RANKS.find(r=>!jobRanks.includes(r.key)&&lv>=Math.floor(r.lvl*0.7));
+  if(!nextNR){wrap.innerHTML='';return;}
+  const pct=Math.min(100,Math.round((lv/NR_LVL[nextNR.key])*100));
+  wrap.innerHTML=`<div class="nr-prog"><div class="nr-top"><span class="nr-lbl" style="color:${nextNR.color};">JOB CHANGE TRACK · ${nextNR.name.toUpperCase()}</span><span class="rp-val">Lv${lv}/${NR_LVL[nextNR.key]}</span></div><div class="nr-track" style="background:${nextNR.color}18;border:1px solid ${nextNR.color}33;"><div class="nr-fill" style="background:linear-gradient(90deg,${nextNR.color}44,${nextNR.color});box-shadow:0 0 6px ${nextNR.color}66;width:${pct}%"></div></div></div>`;
+}
+
+function checkJCBanner(s,lv){
+  const jobRanks=s.jobRanks||[];
+  const available=NEW_RANKS.find(r=>!jobRanks.includes(r.key)&&lv>=NR_LVL[r.key]);
+  const banner=$('jcbanner');if(!banner)return;
+  if(available){
+    banner.style.display='block';
+    banner.querySelector('.jc-sub').textContent=`${available.name.toUpperCase()} trial available · Lv${NR_LVL[available.key]} reached ▸`;
+  } else {
+    banner.style.display='none';
+  }
+}
+
+function openJCPanel(){
+  const s=lS();const lv=gLv(s.totalxp);
+  const jobRanks=s.jobRanks||[];
+  const available=NEW_RANKS.find(r=>!jobRanks.includes(r.key)&&lv>=NR_LVL[r.key]);
+  if(!available)return;
+  $('jcp-sub').textContent=`${available.name.toUpperCase()} · LEVEL ${NR_LVL[available.key]} THRESHOLD`;
+  $('jcp-flavor').textContent=JC_FLAVOR[available.key]||'';
+  const quests=JC_QUESTS[available.key]||[];
+  $('jcp-quests').innerHTML=quests.map(q=>`<div class="jc-quest"><div class="jc-q-name">${q.name}</div><div class="jc-q-desc">${q.desc}</div><div class="jc-q-reward">REWARD: ${q.reward}</div></div>`).join('');
+  $('jcpanel').dataset.target=available.key;
+  $('jcpanel').classList.add('on');
+}
+function closeJCPanel(){$('jcpanel').classList.remove('on');}
+
+function completeJobChange(){
+  const key=$('jcpanel').dataset.target;
+  if(!key)return;
+  const s=lS();
+  s.jobRanks=s.jobRanks||[];
+  if(!s.jobRanks.includes(key))s.jobRanks.push(key);
+  // Bonus XP
+  const bonusMap={IRON:50,STEEL:75,MITHRIL:100,ADAMANT:150,DIVINE:500};
+  s.totalxp=(s.totalxp||0)+(bonusMap[key]||0);
+  sS(s);closeJCPanel();
+  const nr=NEW_RANKS.find(r=>r.key===key);
+  if(nr){
+    queueNotif(()=>{
+      $('nro-letter').textContent=nr.letter;$('nro-letter').style.color=nr.color;
+      $('nro-name').textContent=nr.name.toUpperCase();
+      $('nro').classList.add('on');
+    });
+  }
+  rStat(true);
+}
+
+function renderArmyGrid(s){
+  const grid=$('armygrid');if(!grid)return;
+  const q=lQ();
+  const extracted=HQ_IDS.filter(id=>q.done.includes(id));
+  const defs=extracted.map(id=>SHADOW_ARMY_DEFS[id]).filter(Boolean);
+  const allSlots=HQ_IDS.map(id=>{
+    const done=q.done.includes(id);
+    const def=SHADOW_ARMY_DEFS[id];
+    return{done,def};
+  });
+  const show=allSlots.filter(x=>x.done);
+  if(show.length===0){grid.innerHTML='<div style="grid-column:1/-1;font-family:var(--f3);font-size:8px;color:rgba(155,89,182,.2);letter-spacing:2px;padding:10px 0;">NO SHADOWS EXTRACTED · COMPLETE HIDDEN QUESTS</div>';return;}
+  grid.innerHTML=show.map(({def})=>`<div class="shadow-card"><div class="shadow-rank">${def.rank}</div><div class="shadow-name">${def.name}</div><div class="shadow-skill">${def.skill}</div></div>`).join('');
+}
+
+function updateSystemVoice(){
+  const el=$('svtxt');if(!el)return;
+  const d=new Date();
+  const idx=(d.getDate()+d.getMonth()*3)%SYSTEM_VOICES.length;
+  el.textContent=SYSTEM_VOICES[idx];
+}
+
+function renderTop3(w){
+  const sorted=Object.entries(w).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const maxXP=Math.max(...Object.values(w),1);
+  const g=$('top3grid');if(!g)return;
+  if(sorted.every(([,v])=>v===0)){g.innerHTML='<div style="font-family:var(--f3);font-size:9px;color:rgba(255,255,255,.2);letter-spacing:2px;padding:12px 0;">NO DATA YET THIS WEEK</div>';return;}
+  g.innerHTML=sorted.map(([k,v],i)=>`<div class="top3-item"><div class="top3-rank" style="color:${i===0?'#c9a84c':i===1?'rgba(232,232,230,.45)':'rgba(232,232,230,.25)'}">${i+1}</div><div class="top3-abbr" style="color:${SC[k]};text-shadow:0 0 6px ${SC[k]}80">${k.toUpperCase()}</div><div class="top3-info"><div class="top3-name">${SN[k]}</div><div class="top3-xp">${v} XP this week</div><div class="top3-track"><div class="top3-bar" style="background:linear-gradient(90deg,${SC[k]}44,${SC[k]});box-shadow:0 0 5px ${SC[k]}80;width:${Math.min((v/maxXP)*100,100)}%"></div></div></div></div>`).join('');
+}
+
+function recalcTotals(){
+  const q=lQ();
+  let tot=0;const sxp=Object.fromEntries(STATS.map(s=>[s,0]));
+  document.querySelectorAll('.q').forEach(el=>{if(q.done.includes(el.dataset.id)){const x=parseInt(el.dataset.xp)||0;tot+=x;const st=el.dataset.stat;if(sxp[st]!==undefined)sxp[st]+=x;}});
+  HQ_IDS.forEach(id=>{if(q.done.includes(id)){const el=document.querySelector(`[data-id="${id}"]`);if(el){const x=parseInt(el.dataset.xp)||0;tot+=x;const st=el.dataset.stat;if(sxp[st]!==undefined)sxp[st]+=x;}}});
+  const g=calcGrade(tot);
+  $('xe').textContent=tot;$('tgq').textContent=g.g;$('gsb').textContent=g.s;
+  const mx=maxDailyXP();const rem=Math.max(0,mx-tot);
+  $('xp-remain').textContent=rem+' XP remaining today';
+  $('qtotal').textContent=q.done.length+' quests done · '+tot+' XP earned today';
+  STATS.forEach(k=>{const e=$('sg-'+k);if(e)e.textContent=sxp[k]+' XP';});
+  const gEl=$('gv');if(gEl)gEl.textContent=g.g;
+  const gsEl=$('gs');if(gsEl)gsEl.textContent=g.s;
+  const s2=lS();if(s2.grade!==g.g){s2.grade=g.g;sS(s2);}
+  checkGradeAnim(g.g,tot);
+  return tot;
+}
+
+function handleQuestClick(el){
+  const q=lQ();const id=el.dataset.id;const xp=parseInt(el.dataset.xp)||0;const stat=el.dataset.stat;
+  const wasDone=q.done.includes(id);
+  if(wasDone)q.done=q.done.filter(x=>x!==id);else q.done.push(id);
+  sQ(q);
+  el.classList.toggle('done',!wasDone);
+  const box=el.querySelector('.q-box,.hq-box');if(box)box.textContent=!wasDone?'✓':(el.classList.contains('hq-item')?'◈':'□');
+  const w=lW();
+  if(!wasDone){w[stat]=(w[stat]||0)+xp;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),500);}
+  else w[stat]=Math.max(0,(w[stat]||0)-xp);
+  sW(w);
+  const s=lS();
+  const prevLv=gLv(s.totalxp);const prevRk=gRk(prevLv);
+  const prevJR=[...(s.jobRanks||[])];
+  if(!wasDone){s.totalxp=(s.totalxp||0)+xp;if(stat&&STATS.includes(stat))s[stat]=(s[stat]||0)+xp;}
+  else{s.totalxp=Math.max(0,(s.totalxp||0)-xp);if(stat&&STATS.includes(stat))s[stat]=Math.max(0,(s[stat]||0)-xp);}
+  sS(s);recalcTotals();rStat(false);updateHQCount();
+  const newLv=gLv(s.totalxp);const newRk=gRk(newLv);
+  if(newRk!==prevRk){queueNotif(()=>{$('rul').textContent=newRk;$('rut').textContent=(RNM[newRk]||'').toUpperCase();$('rus').textContent=RMS[newRk]||'';$('ruo').classList.add('on');});}
+  else if(!wasDone&&newLv>prevLv){queueNotif(()=>{$('lun').textContent='LEVEL '+newLv;$('luo').classList.add('on');});}
+  // Check if a new job change just became available
+  const newAvail=NEW_RANKS.find(r=>!s.jobRanks?.includes(r.key)&&newLv>=NR_LVL[r.key]&&!(prevLv>=NR_LVL[r.key]));
+  if(newAvail){
+    queueNotif(()=>{$('jco-icon').textContent=newAvail.letter;$('jco-icon').style.color=newAvail.color;$('jco-msg').textContent=`Level ${NR_LVL[newAvail.key]} reached. The ${newAvail.name} trial is now available.`;$('jco').classList.add('on');});
+  }
+}
+
+function setupQuests(){document.querySelectorAll('.q').forEach(el=>{el.addEventListener('click',function(e){e.stopPropagation();handleQuestClick(this);});});}
+function setupHQItems(){document.querySelectorAll('#hqp .hq-item').forEach(el=>{el.addEventListener('click',function(e){e.stopPropagation();handleQuestClick(this);});});}
+
+function rQuests(){
+  const q=lQ();
+  const mo=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const n=new Date();$('vdate').textContent=`${n.getDate()} ${mo[n.getMonth()]} ${n.getFullYear()}`;
+  document.querySelectorAll('.q').forEach(el=>{const done=q.done.includes(el.dataset.id);el.classList.toggle('done',done);el.querySelector('.q-box').textContent=done?'✓':'□';});
+  document.querySelectorAll('#hqp .hq-item').forEach(el=>{const done=q.done.includes(el.dataset.id);el.classList.toggle('done',done);el.querySelector('.hq-box').textContent=done?'✓':'◈';});
+  recalcTotals();updateHQCount();
+  rPenalties(q.penalties);
+  if(q.verdict){$('vtxt').textContent=q.verdict;$('vinp').value=q.verdict;}
+  renderWeeklyGoals();
+}
+
+function updateHQCount(){
+  const q=lQ();const done=HQ_IDS.filter(id=>q.done.includes(id)).length;
+  const c=$('hqCount');if(c)c.textContent=done+'/9';
+  const s=$('hqSub');if(s)s.textContent='9 trials available · '+done+' completed today';
+}
+
+function openHQPanel(){
+  const q=lQ();
+  document.querySelectorAll('#hqp .hq-item').forEach(el=>{const done=q.done.includes(el.dataset.id);el.classList.toggle('done',done);el.querySelector('.hq-box').textContent=done?'✓':'◈';});
+  $('hqp').classList.add('on');
+}
+function closeHQPanel(){$('hqp').classList.remove('on');}
+
+// ── WEEKLY GOALS ──
+let wkEditMode=false;
+function toggleWkEdit(){
+  wkEditMode=!wkEditMode;
+  const row=$('wk-add-row');
+  row.style.display=wkEditMode?'flex':'none';
+  renderWeeklyGoals();
+}
+
+function renderWeeklyGoals(){
+  const goals=loadGoals();
+  const list=$('wklist');if(!list)return;
+  list.innerHTML=goals.map((g,i)=>`<div class="wk-item"><div class="wk-dot"></div><div class="wk-text">${g.text}</div>${wkEditMode?`<button class="wk-del" onclick="delWkGoal(${i})">✕</button>`:''}<div class="wk-badge">${g.badge||'ACTIVE'}</div></div>`).join('');
+}
+
+function addWkGoal(){
+  const inp=$('wkinp');const v=inp.value.trim();if(!v)return;
+  const goals=loadGoals();goals.push({text:v,badge:'ACTIVE'});saveGoals(goals);renderWeeklyGoals();inp.value='';
+}
+
+function delWkGoal(i){
+  const goals=loadGoals();goals.splice(i,1);saveGoals(goals);renderWeeklyGoals();
+}
+
+$('wkinp')?.addEventListener('keydown',e=>{if(e.key==='Enter')addWkGoal();});
+
+function rPenalties(p){
+  const l=$('plist');
+  if(!p||!p.length){l.innerHTML='<div class="pen-none">NO PENALTIES TODAY</div>';return;}
+  l.innerHTML=p.map((x,i)=>`<div class="pen-item"><span class="pen-txt">⚠ ${x}</span><button class="pen-del" onclick="rmP(${i})">✕</button></div>`).join('');
+}
+function addP(){const i=$('pinp');const v=i.value.trim();if(!v)return;const q=lQ();q.penalties=q.penalties||[];q.penalties.push(v);sQ(q);rPenalties(q.penalties);i.value='';}
+function rmP(i){const q=lQ();q.penalties.splice(i,1);sQ(q);rPenalties(q.penalties);}
+$('vinp').addEventListener('input',function(){const q=lQ();q.verdict=this.value;sQ(q);$('vtxt').textContent=this.value||'—';});
+$('pinp').addEventListener('keydown',e=>{if(e.key==='Enter')addP();});
+function resetDay(){if(confirm('Reset all quests for today?')){_erase(QK()).then(()=>rQuests());}}
+
+// ── STREAK PANEL ──
+let streakWeekOffset=0;
+let editingDay=null;
+
+function openStreak(){
+  streakWeekOffset=0;renderStreakGraph();$('sgp').classList.add('on');
+}
+function closeStreak(){$('sgp').classList.remove('on');cancelDayEdit();}
+
+function streakNavWeek(dir){
+  streakWeekOffset+=dir;
+  if(streakWeekOffset>0)streakWeekOffset=0;
+  renderStreakGraph();
+}
+
+function renderStreakGraph(){
+  const s=lS();
+  const w=lW();
+  $('sg-streak').textContent=s.streak;$('sg-best').textContent=s.best;
+
+  const today=new Date();
+  const targetMon=new Date(today);
+  targetMon.setDate(today.getDate()-today.getDay()+(streakWeekOffset*7));
+
+  const isCurrentWeek=streakWeekOffset===0;
+  $('sg-week-lbl').textContent=isCurrentWeek?'THIS WEEK':`WEEK OF ${targetMon.getDate()}/${targetMon.getMonth()+1}`;
+
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(targetMon);d.setDate(targetMon.getDate()+i);
+    const dateStr=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const key=`qsv8_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+    const isToday=isCurrentWeek&&i===today.getDay();
+    let xp=0;let grade='—';
+    // Check manual override first
+    const manual=loadManualDay(dateStr);
+    if(manual){xp=manual.xp||0;grade=manual.grade||'—';}
+    else {
+      try{const raw=_load(key);const data=raw?JSON.parse(raw):null;
+        if(data&&data.done){data.done.forEach(id=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)xp+=parseInt(el.dataset.xp)||0;});}
+        if(xp>0)grade=calcGrade(xp).g;
+      }catch(e){}
+    }
+    if(isCurrentWeek&&isToday&&xp===0){xp=parseInt($('xe')?.textContent)||0;if(xp>0)grade=calcGrade(xp).g;}
+    days.push({xp,grade,label:DAY_LABELS[i],color:DAY_COLORS[i],isToday,dateStr,dow:i});
+  }
+
+  const weekTotal=days.reduce((a,d)=>a+d.xp,0);
+  $('sg-weekxp').textContent=weekTotal;
+  const maxXP=Math.max(...days.map(d=>d.xp),100);
+  const graph=$('sg-graph');
+  graph.innerHTML=days.map((d,i)=>`
+    <div class="sg-bar-wrap" onclick="openDayEdit(${i},'${d.dateStr}',${d.xp},'${d.grade}')">
+      <div class="sg-xp-lbl" style="color:${d.xp>0?d.color:'transparent'}">${d.xp||''}</div>
+      <div class="sg-bar-outer" style="${d.isToday?`outline:1px dashed ${d.color}44;`:``}">
+        <div class="sg-bar-inner" style="height:${Math.max((d.xp/maxXP)*100,d.isToday?6:0)}%;background:linear-gradient(to top,${d.color}55,${d.color});box-shadow:0 0 8px ${d.color}55;"></div>
+        ${d.grade!=='—'?`<div class="sg-grade-badge" style="color:${GRADE_COLORS[d.grade]||'var(--td)'}">${d.grade}</div>`:''}
+      </div>
+      <div class="sg-day-lbl" style="color:${d.isToday?d.color:'rgba(180,180,176,.4)'}">${d.label}</div>
+    </div>`).join('');
+
+  const verdicts=[[100,'The week is being won. Keep the standard.'],[60,'Solid progress. Push harder in the sessions remaining.'],[30,'The System sees the effort. It is not yet enough.'],[1,'The Gate is open. You have not walked through it yet.'],[0,'No data recorded this week. The System is waiting.']];
+  const v=verdicts.find(([min])=>weekTotal>=min);
+  $('sg-verdict-txt').textContent=v?v[1]:'The System is waiting.';
+}
+
+function openDayEdit(dowIdx,dateStr,currentXP,currentGrade){
+  editingDay={dateStr,dowIdx};
+  $('sg-de-title').textContent=`EDIT ${DAY_LABELS[dowIdx]}`;
+  $('sg-de-xp').value=currentXP||0;
+  $('sg-de-grade').value=currentGrade||'—';
+  $('sg-day-editor').classList.add('on');
+}
+
+function saveDayEdit(){
+  if(!editingDay)return;
+  const xp=parseInt($('sg-de-xp').value)||0;
+  const grade=$('sg-de-grade').value;
+  saveManualDay(editingDay.dateStr,{xp,grade});
+  editingDay=null;$('sg-day-editor').classList.remove('on');
+  renderStreakGraph();
+}
+
+function cancelDayEdit(){editingDay=null;$('sg-day-editor').classList.remove('on');}
+
+// ── SPRINT SETUP ──
+function openSprintSetup(){
+  const start=getSprintStart();
+  // Use local date parts to avoid UTC timezone offset shifting the date
+  const y=start.getFullYear();
+  const m=String(start.getMonth()+1).padStart(2,'0');
+  const d=String(start.getDate()).padStart(2,'0');
+  $('sprint-date-inp').value=`${y}-${m}-${d}`;
+  $('sprintmo').classList.add('on');
+}
+function closeSprintSetup(){$('sprintmo').classList.remove('on');}
+function saveSprintStart(){
+  const val=$('sprint-date-inp').value;
+  if(val){
+    // Parse as local date (not UTC) to avoid off-by-one
+    const [y,mo,d]=val.split('-').map(Number);
+    const date=new Date(y,mo-1,d);
+    _save(SPRINT_KEY,date.toISOString());
+  }
+  closeSprintSetup();rStat(false);updateCircles();
+}
+
+// ── CIRCLES ──
+function updateCircles(){
+  const now=new Date();
+  const start=new Date(now);start.setHours(4,30,0,0);
+  const elapsed=Math.max(0,Math.min(990,(now-start)/60000));
+  const dayPct=Math.min(100,Math.round((elapsed/990)*100));
+  const circ=226.2;
+  const dc=$('dayCircle');if(dc)dc.style.strokeDashoffset=circ-(circ*dayPct/100);
+  const dp=$('dayPct');if(dp)dp.textContent=dayPct+'%';
+  const end=new Date(now);end.setHours(21,0,0,0);
+  const remainMs=Math.max(0,end-now);
+  const hrs=Math.floor(remainMs/3600000);const mins=Math.round((remainMs%3600000)/60000);
+  const ds=$('daySub');
+  if(ds){ds.textContent=now<start?'Day not started yet':now>end?'Day complete':(hrs>0?(hrs+'h '+mins+'m left'):(mins+'m left'));}
+  const sprintStart=getSprintStart();
+  const daysDone=Math.max(0,Math.min(100,Math.floor((now-sprintStart)/864e5)+1));
+  const sprintPct=Math.min(100,Math.round((daysDone/100)*100));
+  const sc=$('sprintCircle');if(sc)sc.style.strokeDashoffset=circ-(circ*sprintPct/100);
+  const sp=$('sprintPct');if(sp)sp.textContent=sprintPct+'%';
+  const ss=$('sprintSub');if(ss)ss.textContent='Day '+Math.max(0,daysDone)+' of 100';
+}
+
+// ── EDIT MODAL ──
+function openModal(){
+  const s=lS();const w=lW();
+  $('fg').value=s.grade;$('fst').value=s.streak;$('fbe').value=s.best;$('ftx').value=s.totalxp;
+  STATS.forEach(k=>{$('f-'+k).value=s[k]||0;$('fw-'+k).value=w[k]||0;});
+  $('mobg').classList.add('on');
+}
+function closeMo(){$('mobg').classList.remove('on');}
+function saveData(){
+  const prev=lS();const pl=gLv(prev.totalxp);const pr=gRk(pl);
+  const s={grade:$('fg').value,streak:parseInt($('fst').value)||0,best:parseInt($('fbe').value)||0,totalxp:parseInt($('ftx').value)||0,jobRanks:prev.jobRanks||[]};
+  STATS.forEach(k=>{s[k]=parseInt($('f-'+k).value)||0;});sS(s);
+  const w={};STATS.forEach(k=>{w[k]=parseInt($('fw-'+k).value)||0;});sW(w);
+  closeMo();rStat(true);
+  const nl=gLv(s.totalxp);const nr=gRk(nl);
+  const ms=[7,14,30,60,100];
+  if(nr!==pr){queueNotif(()=>{$('rul').textContent=nr;$('rut').textContent=(RNM[nr]||'').toUpperCase();$('rus').textContent=RMS[nr]||'';$('ruo').classList.add('on');});}
+  else if(nl>pl){queueNotif(()=>{$('lun').textContent='LEVEL '+nl;$('luo').classList.add('on');});}
+  if(ms.includes(s.streak)&&s.streak!==prev.streak){
+    const msgs={7:'Seven days of showing up. The habit is forming.',14:'Two weeks. The pattern is real now.',30:'Thirty days. This is who you are becoming.',60:'Sixty days. You are not the same person who started.',100:'One hundred days. The system bows.'};
+    queueNotif(()=>{$('smn').textContent=s.streak;$('smm').textContent=msgs[s.streak]||'';$('smo').classList.add('on');});
+  }
+}
+
+// ── HQ NOTIF ──
+let hqNotifShown=false;
+function maybeShowHQNotif(){
+  if(hqNotifShown)return;
+  const key='hqn_'+new Date().toDateString();
+  if(localStorage.getItem(key))return;
+  localStorage.setItem(key,'1');hqNotifShown=true;
+  setTimeout(()=>{const n=$('hqnotif');if(n){n.classList.add('on');setTimeout(()=>n.classList.remove('on'),4500);}},1500);
+}
+function dismissHQNotif(){const n=$('hqnotif');if(n)n.classList.remove('on');}
+
+let lastGradeShown='';
+function checkGradeAnim(grade,xp){
+  if(!['B','A','S'].includes(grade)){lastGradeShown='';return;}
+  if(grade===lastGradeShown)return;
+  const order=['B','A','S'];
+  const prev=order.indexOf(lastGradeShown);const curr=order.indexOf(grade);
+  if(curr<=prev)return;
+  lastGradeShown=grade;
+  const el=$(('gov-'+grade.toLowerCase()));
+  if(el){queueNotif(()=>el.classList.add('on'));}
+}
+
+const notifQueue=[];let notifBusy=false;
+function queueNotif(fn){notifQueue.push(fn);if(!notifBusy)runNextNotif();}
+function runNextNotif(){if(notifQueue.length===0){notifBusy=false;return;}notifBusy=true;const fn=notifQueue.shift();fn();}
+function notifDone(){setTimeout(runNextNotif,400);}
+function dismissLU(){$('luo').classList.remove('on');notifDone();}
+function dismissRU(){$('ruo').classList.remove('on');notifDone();}
+function dismissSM(){$('smo').classList.remove('on');notifDone();}
+function dismissJCO(){$('jco').classList.remove('on');notifDone();openJCPanel();}
+function dismissNRO(){$('nro').classList.remove('on');notifDone();}
+function dismissGradeAnim(){['gov-b','gov-a','gov-s'].forEach(id=>{const el=$(id);if(el)el.classList.remove('on');});notifDone();}
+
+// ── RANK DATA ──
+const RANK_DATA={
+  E:{letter:'E',name:'AWAKENED HUNTER',req:'ENTRY RANK · Level 1',color:'#e8e8e6',
+    desc:'You have just awakened. The Gate has opened and you have stepped through. This is not the rank of the weak — this is the rank of the beginning. Every legendary hunter started here. The system is watching what you do with it.',
+    how:'Show up every day. Complete your daily quests consistently. Reach Level 12 to unlock the next rank.',
+    next:'D — Bronze Gate Hunter. The pattern begins to form. 12 consistent levels required.'},
+  D:{letter:'D',name:'BRONZE GATE HUNTER',req:'LEVEL 12+ REQUIRED',color:'#cd7f32',
+    desc:'The pattern is forming. You are no longer a beginner — you are someone who has shown up enough times to prove it was not an accident.',
+    how:'Maintain consistency through Level 28. Do not let the early momentum die.',
+    next:'C — Silver Gate Hunter. 28 levels. Discipline becomes automatic.'},
+  C:{letter:'C',name:'SILVER GATE HUNTER',req:'LEVEL 28+ REQUIRED',color:'#aaaaaa',
+    desc:'Discipline is real. The habits are beginning to feel automatic rather than forced.',
+    how:'Reach Level 52. Push toward B and A grades regularly.',
+    next:'B — Gold Gate Hunter. 52 levels. High performer territory.'},
+  B:{letter:'B',name:'GOLD GATE HUNTER',req:'LEVEL 52+ REQUIRED',color:'#c9a84c',
+    desc:'High performer. Few people reach here — most quit before they understand what they are building.',
+    how:'Reach Level 80. Consistently hitting A grades while maintaining all six stats.',
+    next:"A — Shadow Monarch's Guard. 80 levels. Elite standard."},
+  A:{letter:'A',name:"SHADOW MONARCH'S GUARD",req:'LEVEL 80+ REQUIRED',color:'#9b59b6',
+    desc:'Elite. Your standard is above almost everyone. At A rank the system grades you against the best version of yourself.',
+    how:'Reach Level 115. Do everything with a quality that cannot be faked.',
+    next:'S — S-Rank Hunter. 115 levels. Exceptional.'},
+  S:{letter:'S',name:'S-RANK HUNTER',req:'LEVEL 115+ REQUIRED',color:'#00b4d8',
+    desc:'Exceptional. The system bends around your will. This is not a hot streak. This is who you are.',
+    how:'Reach Level 155. No shortcuts. No exceptions.',
+    next:'★ — National Level Hunter. 155 levels. The system bows.'},
+  '★':{letter:'★',name:'NATIONAL LEVEL HUNTER',req:'LEVEL 155+ REQUIRED',color:'#c9a84c',
+    desc:'You have become the system. Unstoppable. This rank confirms who you already became.',
+    how:'This is the final E–★ rank. Now pursue the Job Change ranks.',
+    next:'Pursue Job Change Quests for the Divine ranks beyond.'},
+  IRON:{letter:'Fe',name:'IRON COMMANDER',req:'LVL 30+ JOB CHANGE REQUIRED',color:'#9ea7ad',
+    desc:'Iron Commander. You have crossed a threshold that the normal ranking system cannot measure. This title was not assigned — you took it.',
+    how:'Maintain Iron standard. Progress toward Steel Commander at Lv55.',
+    next:'Steel Commander — Lv55 Job Change Quest.'},
+  STEEL:{letter:'St',name:'STEEL COMMANDER',req:'LVL 55+ JOB CHANGE REQUIRED',color:'#5c8fbd',
+    desc:'Steel bends under pressure but does not break. You have proven your discipline is real, not reactive.',
+    how:'Progress toward Mithril Sovereign at Lv85.',
+    next:'Mithril Sovereign — Lv85 Job Change Quest.'},
+  MITHRIL:{letter:'Mi',name:'MITHRIL SOVEREIGN',req:'LVL 85+ JOB CHANGE REQUIRED',color:'#c084fc',
+    desc:'Mithril is rarer than gold and stronger than steel. The hunters who reach this point number in the single digits.',
+    how:'Progress toward Adamant Monarch at Lv120.',
+    next:'Adamant Monarch — Lv120 Job Change Quest.'},
+  ADAMANT:{letter:'Ad',name:'ADAMANT MONARCH',req:'LVL 120+ JOB CHANGE REQUIRED',color:'#22d3ee',
+    desc:'Adamant is unbreakable. You have entered territory where the system can only observe, not guide.',
+    how:'Progress toward the final rank at Lv160.',
+    next:'Shadow Monarch Divine — Lv160 Job Change Quest.'},
+  DIVINE:{letter:'✦',name:'SHADOW MONARCH — DIVINE',req:'LVL 160+ JOB CHANGE · FINAL RANK',color:'#fbbf24',
+    desc:'There is nothing beyond this. The Shadow Monarch stands at the apex not because the system placed him there, but because he earned every step of the climb.',
+    how:'This is the end. There is no next step. Only maintenance of the standard that brought you here.',
+    next:'MAX RANK ACHIEVED. The system has nothing left to offer you.'},
+};
+
+function openRankPanel(key){
+  const d=RANK_DATA[key];if(!d)return;
+  const col=d.color;
+  $('rnk-letter').textContent=d.letter;$('rnk-letter').style.color=col;$('rnk-letter').style.textShadow=`0 0 30px ${col}88`;
+  $('rnk-name').textContent=d.name;$('rnk-req').textContent=d.req;
+  $('rnk-desc').textContent=d.desc;$('rnk-how').textContent=d.how;
+  $('rnk-next-txt').textContent=d.next;
+  $('rkp').classList.add('on');
+}
+function closeRankPanel(){$('rkp').classList.remove('on');}
+
+// ── STAT PANEL ──
+function openStat(key){
+  const s=lS();const w=lW();const d=STAT_INFO[key];if(!d)return;
+  $('sp-abbr').textContent=key.toUpperCase();$('sp-abbr').style.color=d.color;$('sp-abbr').style.textShadow=`0 0 20px ${d.color}88`;
+  $('sp-name').textContent=d.name;
+  $('sp-stats').textContent=`All-time: ${xpToStat(s[key]||0)} pts · ${s[key]||0} XP · Week: ${w[key]||0} XP`;
+  $('sp-desc').textContent=d.desc;
+  $('sp-quests').innerHTML=d.quests.map(q=>`<div class="sp-q"><div class="sp-q-name">${q.t}</div><div class="sp-q-xp">+${q.x} XP</div></div>`).join('');
+  $('sp').classList.add('on');
+  setTimeout(()=>startSketch(key),120);
+}
+function closeStat(){$('sp').classList.remove('on');stopSketch();}
+
+// ── NAV & SWIPE ──
+let cur=0;const swEl=$('sw');
+let stX=0,stY=0,drag=false,mDrag=false,mX=0;
+const PANELS=['.stat-panel','.streak-panel','.hq-panel','.rank-panel','.mo-bg','.ov','.jcpanel'];
+const noSwipe=e=>['BUTTON','INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||PANELS.some(p=>e.target.closest(p));
+function gt(i,anim=true){
+  cur=Math.max(0,Math.min(2,i));
+  swEl.style.transition=anim?'transform .38s cubic-bezier(.4,0,.2,1)':'none';
+  swEl.style.transform=`translateX(-${cur*100}vw)`;
+  document.querySelectorAll('.nav-item').forEach((n,j)=>n.classList.toggle('on',j===cur));
+  if(cur===1)maybeShowHQNotif();
+}
+swEl.addEventListener('touchstart',e=>{if(noSwipe(e))return;stX=e.touches[0].clientX;stY=e.touches[0].clientY;drag=true;swEl.style.transition='none';},{passive:true});
+swEl.addEventListener('touchmove',e=>{if(!drag)return;const dx=e.touches[0].clientX-stX;const dy=e.touches[0].clientY-stY;if(Math.abs(dy)>Math.abs(dx)+5){drag=false;return;}swEl.style.transform=`translateX(${-cur*window.innerWidth+dx}px)`;},{passive:true});
+swEl.addEventListener('touchend',e=>{if(!drag)return;drag=false;const dx=e.changedTouches[0].clientX-stX;if(Math.abs(dx)>60)gt(dx<0?cur+1:cur-1);else gt(cur);});
+swEl.addEventListener('mousedown',e=>{if(noSwipe(e))return;mX=e.clientX;mDrag=true;swEl.style.transition='none';});
+swEl.addEventListener('mousemove',e=>{if(!mDrag)return;swEl.style.transform=`translateX(${-cur*window.innerWidth+(e.clientX-mX)}px)`;});
+swEl.addEventListener('mouseup',e=>{if(!mDrag)return;mDrag=false;const dx=e.clientX-mX;if(Math.abs(dx)>60)gt(dx<0?cur+1:cur-1);else gt(cur);});
+swEl.addEventListener('mouseleave',()=>{if(mDrag){mDrag=false;gt(cur);}});
+
+// ── WORKOUT LABELS ──
+function updateWorkoutQuestLabels(){
+  const SESSION={
+    0:{name:'Posture & Mobility Flow (05:45 — 20–30 min)',warmup:'Warm-Up · gentle mobility protocol'},
+    1:{name:'Workout — Upper A · Strength (05:15 — 75 min)',warmup:'Warm-Up protocol (10–12 min)'},
+    2:{name:'Workout — Lower A · Strength (05:15 — 75 min)',warmup:'Warm-Up protocol (10–12 min)'},
+    3:{name:'Mobility + Boxing Skill Work (05:15 — 25 min)',warmup:'Warm-Up · mobility flow'},
+    4:{name:'Workout — Upper B · Hypertrophy (05:15 — 75 min)',warmup:'Warm-Up protocol (10–12 min)'},
+    5:{name:'Workout — Lower B · Glute & Hamstring (05:15 — 75 min)',warmup:'Warm-Up protocol (10–12 min)'},
+    6:{name:'Active Recovery Session (05:15 — 60 min)',warmup:'Warm-Up · light movement'}
+  };
+  const dow=new Date().getDay();const s=SESSION[dow];
+  const wt=$('qt-warmup');const wk=$('qt-workout');
+  if(wt)wt.textContent=s.warmup;if(wk)wk.textContent=s.name;
+  STAT_INFO.pow.quests[0].t=s.warmup;STAT_INFO.pow.quests[1].t=s.name;
+}
+
+// ── SKETCH ANIMATIONS (all 6 preserved exactly) ──
+let sketchAF=null;
+function stopSketch(){if(sketchAF){cancelAnimationFrame(sketchAF);sketchAF=null;}drawINT._pulses=null;drawINT._nodes=null;}
+function startSketch(key){
+  stopSketch();
+  const wrap=$('sketch-wrap');const canvas=$('sketch-canvas');if(!wrap||!canvas)return;
+  const W=wrap.clientWidth;const H=Math.min(W,220);
+  canvas.width=W*2;canvas.height=H*2;canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(2,2);
+  const cx=W/2;const cy=H/2;const S=Math.min(W,H);
+  const sketches={spi:drawSPI,int:drawINT,pow:drawPOW,ath:drawATH,vit:drawVIT,cha:drawCHA};
+  const fn=sketches[key];if(!fn)return;
+  let t=0;
+  function frame(){t+=0.016;ctx.clearRect(0,0,W,H);fn(ctx,W,H,cx,cy,S,t);sketchAF=requestAnimationFrame(frame);}
+  frame();
+}
+function lerp(a,b,t){return a+(b-a)*t;}
+function drawSPI(ctx,W,H,cx,cy,S,t){const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.5);bg.addColorStop(0,'rgba(201,168,76,.07)');bg.addColorStop(1,'rgba(20,18,14,0)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);const beam=ctx.createLinearGradient(cx,0,cx,H);beam.addColorStop(0,'rgba(201,168,76,.2)');beam.addColorStop(0.4,'rgba(201,168,76,.05)');beam.addColorStop(1,'rgba(201,168,76,0)');ctx.save();ctx.beginPath();ctx.moveTo(cx-W*.04,0);ctx.lineTo(cx+W*.04,0);ctx.lineTo(cx+W*.2,H);ctx.lineTo(cx-W*.2,H);ctx.closePath();ctx.fillStyle=beam;ctx.fill();ctx.restore();const R=S*.42;const rot=t*.4;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle='rgba(201,168,76,.18)';ctx.lineWidth=.6;ctx.stroke();for(let i=0;i<12;i++){const a=rot+(i/12)*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle=`rgba(201,168,76,${.06+.03*Math.sin(t*2+i)})`;ctx.lineWidth=.5;ctx.stroke();}ctx.beginPath();ctx.arc(cx,cy,R*.72,0,Math.PI*2);ctx.strokeStyle='rgba(201,168,76,.22)';ctx.lineWidth=.7;ctx.stroke();for(let i=0;i<6;i++){const a=rot+(i/6)*Math.PI*2;const r1=R*.16;const r2=R*.72;ctx.beginPath();ctx.arc(cx+Math.cos(a)*(r1+r2)/2,cy+Math.sin(a)*(r1+r2)/2,(r2-r1)/2,a+Math.PI,a);ctx.strokeStyle=`rgba(201,168,76,${.28+.1*Math.sin(t*1.5+i)})`;ctx.lineWidth=.9;ctx.stroke();}ctx.beginPath();ctx.arc(cx,cy,R*.16,0,Math.PI*2);ctx.strokeStyle='rgba(201,168,76,.4)';ctx.lineWidth=.8;ctx.stroke();for(let i=0;i<8;i++){const a=rot*1.3+(i/8)*Math.PI*2;ctx.save();ctx.translate(cx,cy);ctx.rotate(a);ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(R*.06,-R*.05,R*.12,-R*.025,R*.12,0);ctx.bezierCurveTo(R*.12,R*.025,R*.06,R*.05,0,0);ctx.fillStyle=`rgba(201,168,76,${.15+.06*Math.sin(t*3+i)})`;ctx.fill();ctx.restore();}const pulse=.6+.4*Math.sin(t*2.2);const gem=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.055);gem.addColorStop(0,`rgba(255,240,180,${.9*pulse})`);gem.addColorStop(.5,`rgba(201,168,76,${.4*pulse})`);gem.addColorStop(1,'rgba(201,168,76,0)');ctx.beginPath();ctx.arc(cx,cy,S*.055,0,Math.PI*2);ctx.fillStyle=gem;ctx.fill();for(let i=0;i<4;i++){const a=t*.8+(i/4)*Math.PI*2;const px=cx+Math.cos(a)*R;const py=cy+Math.sin(a)*R;const g2=ctx.createRadialGradient(px,py,0,px,py,S*.028);g2.addColorStop(0,`rgba(255,240,180,${.7+.3*Math.sin(t*3+i)})`);g2.addColorStop(1,'rgba(201,168,76,0)');ctx.beginPath();ctx.arc(px,py,S*.028,0,Math.PI*2);ctx.fillStyle=g2;ctx.fill();}}
+function drawINT(ctx,W,H,cx,cy,S,t){if(!drawINT._nodes){drawINT._nodes=[{x:.5,y:.5,tier:5},{x:.25,y:.3,tier:3},{x:.75,y:.3,tier:3},{x:.15,y:.62,tier:2},{x:.5,y:.18,tier:2},{x:.85,y:.62,tier:2},{x:.35,y:.78,tier:2},{x:.65,y:.78,tier:2},{x:.4,y:.44,tier:1},{x:.6,y:.44,tier:1},{x:.3,y:.6,tier:1},{x:.7,y:.6,tier:1}].map(n=>({xr:n.x,yr:n.y,tier:n.tier,phase:Math.random()*Math.PI*2}));}const nodes=drawINT._nodes.map(n=>({x:n.xr*W,y:n.yr*H,tier:n.tier,phase:n.phase}));if(!drawINT._pulses){drawINT._pulses=[];for(let i=0;i<6;i++)drawINT._pulses.push({a:Math.floor(Math.random()*nodes.length),b:Math.floor(Math.random()*nodes.length),t:Math.random(),spd:.008+Math.random()*.012});}const edges=[];for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x;const dy=nodes[i].y-nodes[j].y;if(Math.sqrt(dx*dx+dy*dy)<W*.38)edges.push([i,j]);}const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.5);bg.addColorStop(0,'rgba(68,136,255,.06)');bg.addColorStop(1,'rgba(14,18,28,0)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);edges.forEach(([i,j])=>{ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle='rgba(68,136,255,.07)';ctx.lineWidth=.6;ctx.stroke();});drawINT._pulses.forEach(p=>{p.t+=p.spd;if(p.t>=1){p.t=0;p.a=Math.floor(Math.random()*nodes.length);p.b=Math.floor(Math.random()*nodes.length);}const na=nodes[p.a];const nb=nodes[p.b];const px=lerp(na.x,nb.x,p.t);const py=lerp(na.y,nb.y,p.t);const g=ctx.createRadialGradient(px,py,0,px,py,S*.025);g.addColorStop(0,'rgba(180,210,255,.9)');g.addColorStop(.4,'rgba(68,136,255,.5)');g.addColorStop(1,'rgba(68,136,255,0)');ctx.beginPath();ctx.arc(px,py,S*.025,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();});nodes.forEach(n=>{const pulse=.6+.4*Math.sin(t*1.2+n.phase);const r=S*(.014+n.tier*.007);const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,r*2.2);g.addColorStop(0,`rgba(180,210,255,${.85*pulse})`);g.addColorStop(.5,`rgba(68,136,255,${.45*pulse})`);g.addColorStop(1,'rgba(68,136,255,0)');ctx.beginPath();ctx.arc(n.x,n.y,r*2.2,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=`rgba(200,220,255,${.75*pulse})`;ctx.fill();});}
+drawINT._pulses=null;drawINT._nodes=null;
+function drawPOW(ctx,W,H,cx,cy,S,t){const pressT=(Math.sin(t)+1)/2;const barY=cy+pressT*S*.06;const floorGlow=ctx.createRadialGradient(cx,cy+S*.3,0,cx,cy+S*.3,S*.45);floorGlow.addColorStop(0,`rgba(255,34,68,${.1*pressT})`);floorGlow.addColorStop(1,'rgba(255,34,68,0)');ctx.fillStyle=floorGlow;ctx.fillRect(0,0,W,H);for(let i=0;i<3;i++){const wt=(pressT+i/3)%1;ctx.beginPath();ctx.arc(cx,cy+S*.28,S*.1+wt*S*.38,0,Math.PI*2);ctx.strokeStyle=`rgba(255,34,68,${(1-wt)*.22})`;ctx.lineWidth=1.5*(1-wt);ctx.stroke();}const shadow=ctx.createRadialGradient(cx,cy+S*.28,0,cx,cy+S*.28,S*.18*(0.4+0.6*(1-pressT)));shadow.addColorStop(0,`rgba(255,34,68,${.15*pressT})`);shadow.addColorStop(1,'rgba(255,34,68,0)');ctx.beginPath();ctx.ellipse(cx,cy+S*.28,S*.18*(0.4+0.6*(1-pressT)),S*.05,0,0,Math.PI*2);ctx.fillStyle=shadow;ctx.fill();const barHalf=W*.38;const tilt=.055;const grad=ctx.createLinearGradient(cx-barHalf,barY,cx+barHalf,barY);grad.addColorStop(0,'rgba(130,130,130,.55)');grad.addColorStop(.5,'rgba(210,210,210,.9)');grad.addColorStop(1,'rgba(130,130,130,.55)');ctx.beginPath();ctx.moveTo(cx-barHalf,barY-tilt*S-S*.018);ctx.lineTo(cx+barHalf,barY+tilt*S-S*.018);ctx.lineTo(cx+barHalf,barY+tilt*S+S*.018);ctx.lineTo(cx-barHalf,barY-tilt*S+S*.018);ctx.closePath();ctx.fillStyle=grad;ctx.fill();function plate(dir,n){const x=cx+dir*(W*.28+n*W*.052);const yc=barY+dir*S*tilt;const th=W*.038-n*W*.007;const h=S*(.16-n*.03);ctx.beginPath();ctx.moveTo(x,yc-h/2);ctx.lineTo(x+th,yc-h/2+dir*S*.012);ctx.lineTo(x+th,yc+h/2+dir*S*.012);ctx.lineTo(x,yc+h/2);ctx.closePath();const pg=ctx.createLinearGradient(x,yc-h/2,x+th,yc+h/2);const r=210-n*28;pg.addColorStop(0,`rgba(${r-35},${r-35},${r-35},.65)`);pg.addColorStop(.5,`rgba(${r},${r},${r},.9)`);pg.addColorStop(1,`rgba(${r-55},${r-55},${r-55},.5)`);ctx.fillStyle=pg;ctx.fill();ctx.strokeStyle=`rgba(255,34,68,${.18+n*.04})`;ctx.lineWidth=.6;ctx.stroke();}for(let i=0;i<3;i++){plate(1,i);plate(-1,i);}const ap=.25+.55*pressT;for(let i=-1;i<=1;i++){const ax=cx+i*W*.065;const ay=barY-S*.26;const al=S*.09*pressT;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax,ay+al);ctx.strokeStyle=`rgba(255,34,68,${ap})`;ctx.lineWidth=1.2;ctx.stroke();if(al>3){ctx.beginPath();ctx.moveTo(ax-3,ay+al-5);ctx.lineTo(ax,ay+al);ctx.lineTo(ax+3,ay+al-5);ctx.strokeStyle=`rgba(255,34,68,${ap})`;ctx.lineWidth=1.2;ctx.stroke();}}const gl=(Math.sin(t*2)+1)/2;const gx=cx-barHalf+gl*barHalf*2;const gy=barY+(-1+gl*2)*S*tilt;const gg=ctx.createRadialGradient(gx,gy,0,gx,gy,S*.022);gg.addColorStop(0,'rgba(255,255,255,.85)');gg.addColorStop(1,'rgba(255,255,255,0)');ctx.beginPath();ctx.arc(gx,gy,S*.022,0,Math.PI*2);ctx.fillStyle=gg;ctx.fill();}
+function drawATH(ctx,W,H,cx,cy,S,t){const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.5);bg.addColorStop(0,'rgba(0,180,216,.06)');bg.addColorStop(1,'rgba(0,180,216,0)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);for(let i=0;i<8;i++){const y=H*.2+i*(H*.07);const len=W*(.15+.2*Math.sin(t*3+i));const alpha=(.1+.08*Math.abs(Math.sin(t*2+i)));const xStart=(t*W*.6+i*W*.13)%W;ctx.beginPath();ctx.moveTo(xStart,y);ctx.lineTo(xStart-len,y);ctx.strokeStyle=`rgba(0,180,216,${alpha})`;ctx.lineWidth=.8;ctx.stroke();}const bPulse=.7+.3*Math.sin(t*3);const bx=cx;const by=cy-S*.12;const bs=S*.28;ctx.save();ctx.globalAlpha=bPulse;ctx.beginPath();ctx.moveTo(bx+bs*.15,by-bs*.5);ctx.lineTo(bx-bs*.08,by+bs*.05);ctx.lineTo(bx+bs*.12,by+bs*.05);ctx.lineTo(bx-bs*.15,by+bs*.5);ctx.lineTo(bx+bs*.08,by-bs*.05);ctx.lineTo(bx-bs*.12,by-bs*.05);ctx.closePath();const lg=ctx.createLinearGradient(bx,by-bs*.5,bx,by+bs*.5);lg.addColorStop(0,'rgba(180,230,255,.9)');lg.addColorStop(.5,'rgba(0,180,216,.7)');lg.addColorStop(1,'rgba(0,100,180,.4)');ctx.fillStyle=lg;ctx.fill();ctx.shadowColor='#00b4d8';ctx.shadowBlur=20;ctx.fill();ctx.restore();for(let i=0;i<3;i++){const wt=(t*.8+i/3)%1;const wr=S*.05+wt*S*.35;ctx.beginPath();ctx.arc(cx,cy+S*.3,wr,Math.PI,Math.PI*2);ctx.strokeStyle=`rgba(0,180,216,${(1-wt)*.3})`;ctx.lineWidth=1.2*(1-wt);ctx.stroke();}const core=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.06);core.addColorStop(0,`rgba(200,240,255,${.8*bPulse})`);core.addColorStop(.5,`rgba(0,180,216,${.4*bPulse})`);core.addColorStop(1,'rgba(0,180,216,0)');ctx.beginPath();ctx.arc(cx,cy,S*.06,0,Math.PI*2);ctx.fillStyle=core;ctx.fill();}
+function drawVIT(ctx,W,H,cx,cy,S,t){const beatCycle=t*1.1%(Math.PI*2);const beat=Math.max(0,Math.sin(beatCycle))*0.6+Math.max(0,Math.sin(beatCycle*2-0.4))*0.4;const scale=1+beat*0.12;const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.55);bg.addColorStop(0,`rgba(0,255,136,${0.04+beat*0.05})`);bg.addColorStop(0.5,`rgba(0,180,80,${0.02+beat*0.02})`);bg.addColorStop(1,'rgba(0,255,136,0)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);for(let i=0;i<4;i++){const rt=(t*0.9+i*0.25)%(Math.PI*2);const rp=Math.max(0,Math.sin(rt));const rr=S*(0.18+rp*0.32);ctx.beginPath();ctx.arc(cx,cy,rr,0,Math.PI*2);ctx.strokeStyle=`rgba(0,255,136,${(1-rp)*0.18})`;ctx.lineWidth=1.2*(1-rp);ctx.stroke();}function drawHeart(hx,hy,sz,alpha,filled){const w=sz;const h=sz*0.9;ctx.save();ctx.translate(hx,hy);ctx.scale(scale,scale);ctx.beginPath();ctx.moveTo(0,h*0.5);ctx.bezierCurveTo(-w*0.05,h*0.1,-w*0.5,-h*0.15,-w*0.5,-h*0.1);ctx.bezierCurveTo(-w*0.5,-h*0.55,-w*0.05,-h*0.65,0,-h*0.35);ctx.bezierCurveTo(w*0.05,-h*0.65,w*0.5,-h*0.55,w*0.5,-h*0.1);ctx.bezierCurveTo(w*0.5,-h*0.15,w*0.05,h*0.1,0,h*0.5);ctx.closePath();if(filled){const hg=ctx.createRadialGradient(0,-h*0.05,0,0,-h*0.05,sz*0.7);hg.addColorStop(0,`rgba(180,255,200,${alpha})`);hg.addColorStop(0.45,`rgba(0,255,136,${alpha*0.85})`);hg.addColorStop(1,`rgba(0,140,70,${alpha*0.4})`);ctx.fillStyle=hg;ctx.fill();}else{ctx.strokeStyle=`rgba(0,255,136,${alpha})`;ctx.lineWidth=1;ctx.stroke();}ctx.restore();}drawHeart(cx,cy,S*0.42,0.08,false);drawHeart(cx,cy,S*0.38,0.14,false);drawHeart(cx,cy,S*0.32,0.55+beat*0.2,true);drawHeart(cx,cy,S*0.16,0.4+beat*0.45,true);const lineY=cy+S*0.36;const lineX1=W*0.08;const lineX2=W*0.92;const lineW=lineX2-lineX1;const spikePos=lineX1+((t*0.28)%(1))*lineW;const spikeW=lineW*0.12;ctx.beginPath();ctx.moveTo(lineX1,lineY);if(spikePos-spikeW/2>lineX1)ctx.lineTo(spikePos-spikeW*0.5,lineY);ctx.lineTo(spikePos-spikeW*0.3,lineY+S*0.025);ctx.lineTo(spikePos-spikeW*0.1,lineY+S*0.025);ctx.lineTo(spikePos,lineY-S*0.075);ctx.lineTo(spikePos+spikeW*0.15,lineY+S*0.045);ctx.lineTo(spikePos+spikeW*0.3,lineY+S*0.015);ctx.lineTo(spikePos+spikeW*0.5,lineY);if(spikePos+spikeW*0.5<lineX2)ctx.lineTo(lineX2,lineY);ctx.strokeStyle='rgba(0,255,136,0.35)';ctx.lineWidth=1.2;ctx.stroke();const dotX=spikePos;const dotY=lineY-S*0.075;const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,S*0.025);dg.addColorStop(0,'rgba(180,255,200,0.9)');dg.addColorStop(1,'rgba(0,255,136,0)');ctx.beginPath();ctx.arc(dotX,dotY,S*0.025,0,Math.PI*2);ctx.fillStyle=dg;ctx.fill();if(beat>0.6){const sparkCount=5;const sparkAlpha=(beat-0.6)/0.4;for(let i=0;i<sparkCount;i++){const sa=(i/sparkCount)*Math.PI*2+t*4;const sr=S*(0.18+beat*0.12);const sx=cx+Math.cos(sa)*sr;const sy=cy+S*0.16+Math.sin(sa)*sr*0.5;const sg2=ctx.createRadialGradient(sx,sy,0,sx,sy,S*0.018);sg2.addColorStop(0,`rgba(200,255,210,${sparkAlpha*0.8})`);sg2.addColorStop(1,'rgba(0,255,136,0)');ctx.beginPath();ctx.arc(sx,sy,S*0.018,0,Math.PI*2);ctx.fillStyle=sg2;ctx.fill();}}}
+function drawCHA(ctx,W,H,cx,cy,S,t){const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,S*.5);bg.addColorStop(0,'rgba(0,255,221,.05)');bg.addColorStop(1,'rgba(0,255,221,0)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);for(let wi=0;wi<5;wi++){ctx.beginPath();for(let x=0;x<=W;x+=2){const nx=x/W;const y=cy+Math.sin(nx*Math.PI*6+t*3+wi*1.3)*S*(.025+wi*.005)+Math.sin(nx*Math.PI*10-t*2+wi)*S*.01;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=`rgba(0,255,221,${.05+.03*Math.sin(t*1.5+wi)})`;ctx.lineWidth=.8;ctx.stroke();}const reach=.035*Math.sin(t*1.5);const gap=W*.13-reach*W;const lTipX=cx-gap;const lTipY=cy-S*.02;const rTipX=cx+gap;const rTipY=cy+S*.02;function drawHand(tipX,tipY,dir){const wrist={x:tipX+dir*W*.26,y:tipY+S*.07};ctx.beginPath();ctx.moveTo(wrist.x,wrist.y-S*.055);ctx.lineTo(tipX+dir*W*.05,tipY-S*.04);ctx.lineTo(tipX,tipY);ctx.lineTo(tipX+dir*W*.03,tipY+S*.04);ctx.lineTo(wrist.x,wrist.y+S*.055);ctx.closePath();const pg=ctx.createLinearGradient(wrist.x,wrist.y,tipX,tipY);pg.addColorStop(0,'rgba(0,255,221,.07)');pg.addColorStop(.7,'rgba(0,255,221,.16)');pg.addColorStop(1,'rgba(0,255,221,.04)');ctx.fillStyle=pg;ctx.fill();ctx.strokeStyle='rgba(0,255,221,.32)';ctx.lineWidth=.8;ctx.stroke();for(let f=0;f<4;f++){const sp=(f-1.5)*S*.02;const fl=S*(.09-Math.abs(f-1.5)*.008);ctx.beginPath();ctx.moveTo(tipX+dir*W*.04+sp,tipY-S*.02);ctx.quadraticCurveTo(tipX+dir*W*.01+sp,tipY-fl*.5,tipX+sp*.3,tipY-fl);ctx.strokeStyle='rgba(0,255,221,.28)';ctx.lineWidth=1.1;ctx.stroke();}}const lglow=ctx.createRadialGradient(lTipX,lTipY,0,lTipX,lTipY,S*.06);lglow.addColorStop(0,'rgba(0,255,221,.22)');lglow.addColorStop(1,'rgba(0,255,221,0)');ctx.beginPath();ctx.arc(lTipX,lTipY,S*.06,0,Math.PI*2);ctx.fillStyle=lglow;ctx.fill();const rglow=ctx.createRadialGradient(rTipX,rTipY,0,rTipX,rTipY,S*.06);rglow.addColorStop(0,'rgba(0,255,221,.22)');rglow.addColorStop(1,'rgba(0,255,221,0)');ctx.beginPath();ctx.arc(rTipX,rTipY,S*.06,0,Math.PI*2);ctx.fillStyle=rglow;ctx.fill();drawHand(lTipX,lTipY,1);drawHand(rTipX,rTipY,-1);const spX=(lTipX+rTipX)/2;const spY=(lTipY+rTipY)/2;const spP=.6+.4*Math.abs(Math.sin(t*5));for(let i=0;i<5;i++){const sa=(i/5)*Math.PI*2+t*9;const sr=S*.016*spP;ctx.beginPath();ctx.moveTo(spX,spY);ctx.lineTo(spX+Math.cos(sa)*sr*(0.5+Math.random()*.5),spY+Math.sin(sa)*sr*(0.5+Math.random()*.5));ctx.strokeStyle=`rgba(180,255,240,${.75*spP})`;ctx.lineWidth=.9;ctx.stroke();}const sg=ctx.createRadialGradient(spX,spY,0,spX,spY,S*.04);sg.addColorStop(0,`rgba(220,255,250,${.95*spP})`);sg.addColorStop(.35,`rgba(0,255,221,${.55*spP})`);sg.addColorStop(1,'rgba(0,255,221,0)');ctx.beginPath();ctx.arc(spX,spY,S*.04,0,Math.PI*2);ctx.fillStyle=sg;ctx.fill();const eline=ctx.createLinearGradient(lTipX,lTipY,rTipX,rTipY);eline.addColorStop(0,'rgba(0,255,221,0)');eline.addColorStop(.45,'rgba(0,255,221,.45)');eline.addColorStop(.5,'rgba(220,255,250,.9)');eline.addColorStop(.55,'rgba(0,255,221,.45)');eline.addColorStop(1,'rgba(0,255,221,0)');ctx.beginPath();ctx.moveTo(lTipX,lTipY);ctx.lineTo(rTipX,rTipY);ctx.strokeStyle=eline;ctx.lineWidth=1.5*spP;ctx.stroke();}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  const _d=new Date();const _dy=_d.getDay();const _m=new Date(_d);_m.setDate(_d.getDate()-_dy);
+  const _keys=[
+    SK,
+    `qsv8_${_d.getFullYear()}_${_d.getMonth()}_${_d.getDate()}`,
+    `wk9_${_m.getFullYear()}_${_m.getMonth()}_${_m.getDate()}`,
+    WG_KEY,SPRINT_KEY
+  ];
+  _preload(_keys).then(()=>{
+    rStat(true);rQuests();setupQuests();setupHQItems();gt(0,false);
+    // FIX: seed lastGradeShown from saved state so overlay doesn't fire on reload
+    lastGradeShown=lS().grade||'';
+    updateWorkoutQuestLabels();
+    // Mark palette as initialised — flash label won't show before this point
+    setTimeout(()=>{_paletteInitDone=true;},1000);
+    setTimeout(updateCircles,500);
+    setInterval(updateCircles,60000);
+    setInterval(()=>rStat(false),60000);
+  });
+});
+
+window.addEventListener('beforeunload',()=>{sS(lS());sQ(lQ());sW(lW());});
+</script>
+</body>
+</html>
